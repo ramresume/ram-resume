@@ -45,14 +45,14 @@ const DemoBlock = ({ title, description, highlights, demoImage, imageLeft }) => 
           once: true,
           amount: 0.4,
         }}
-        className="w-full"
+        className="w-full rounded-[16px]"
       >
         <Image
           src={urlFor(demoImage).url()}
           alt="Demo Screenshot"
-          width={550}
-          height={550}
-          className="w-full"
+          width={600}
+          height={600}
+          className="w-full rounded-[16px]"
         />
       </motion.div>
     </FlipGrid>

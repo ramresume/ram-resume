@@ -21,12 +21,6 @@ module.exports = function (passport) {
 
           let user = await User.findOne({ googleId: profile.id });
 
-          if (!user.firstName || !user.lastName) {
-            user.firstName = profile.name.givenName;
-            user.lastName = profile.name.familyName;
-            await user.save();
-          }
-
           if (!user) {
             // New user - they'll need to accept terms later
             user = await User.create({
@@ -42,6 +36,13 @@ module.exports = function (passport) {
           } else {
             // Update existing user's profile picture
             user.profilePicture = profile.photos[0].value.replace(/=s\d+-c/, "=s400-c");
+            await user.save();
+          }
+
+          // Update user's name if it's not set
+          if (!user?.firstName || !user?.lastName) {
+            user.firstName = profile.name.givenName;
+            user.lastName = profile.name.familyName;
             await user.save();
           }
 

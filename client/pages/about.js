@@ -252,7 +252,7 @@ const ScrollingLetterIndex = ({ letterIndex, activeLetter, setActiveLetter }) =>
 
     let currentPosition = scrollPosition + windowHeight / 2;
 
-    return Math.max(minScroll, Math.min(maxScroll, currentPosition)) - 200;
+    return Math.max(minScroll, Math.min(maxScroll, currentPosition)) - 100;
   };
 
   return (

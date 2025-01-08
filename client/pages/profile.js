@@ -12,15 +12,12 @@ import {
 } from "@tabler/icons-react";
 import PageContainer from "@/components/PageContainer";
 import GradientContainer from "@/components/ui/GradientContainer";
-import { useApi } from "@/hooks/useApi";
-import toast from "react-hot-toast";
+import ProfileEditForm from "@/components/Profile/ProfileEditForm";
 
 export default function Profile() {
   const { user, loading, logout, usage, checkUsage } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
-
-  console.log(usage);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -173,8 +170,7 @@ export default function Profile() {
       </PageContainer>
       {isEditing && (
         <>
-          <div className="fixed h-screen inset-0 bg-fordham-black/80 backdrop-blur-sm z-[60]" />
-          <div className="fixed h-screen inset-0 flex items-center justify-center z-[70] overflow-y-auto">
+          <div className="fixed h-screen -inset-[100px] bg-fordham-black/80 backdrop-blur-sm z-[60]">
             <EditProfile user={user} onClose={() => setIsEditing(false)} />
           </div>
         </>
@@ -183,185 +179,26 @@ export default function Profile() {
   );
 }
 
-const majors = [
-  "Computer Science",
-  "Information Systems",
-  "Business Administration",
-  "Finance",
-  "Marketing",
-  "Economics",
-  "Mathematics",
-  "Other",
-];
-
-const positions = [
-  "Software Engineer",
-  "Data Scientist",
-  "Product Manager",
-  "Business Analyst",
-  "Financial Analyst",
-  "Marketing Specialist",
-  "Data Analyst",
-  "Other",
-];
-
 function EditProfile({ user, onClose }) {
-  const api = useApi();
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: user.firstName || "",
-    lastName: user.lastName || "",
-    gradYear: user.gradYear || "",
-    major: user.major || "",
-    interestedPositions: user.interestedPositions || [],
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handlePositionToggle = (position) => {
-    setFormData((prev) => {
-      const positions = prev.interestedPositions.includes(position)
-        ? prev.interestedPositions.filter((p) => p !== position)
-        : [...prev.interestedPositions, position];
-      return { ...prev, interestedPositions: positions };
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      await api.request("/api/user", {
-        method: "PUT",
-        body: JSON.stringify(formData),
-      });
-      toast.success("Profile updated successfully");
-      // Refresh the page to show updated data
-      window.location.reload();
-    } catch (error) {
-      toast.error("Failed to update profile");
-      console.error("Update error:", error);
-    } finally {
-      setLoading(false);
-      onClose();
-    }
-  };
-
   return (
-    <div className="bg-fordham-white rounded-[16px] p-8 w-full max-w-2xl mx-4 relative">
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 text-fordham-black/80 hover:text-fordham-black"
-      >
-        ✕
-      </button>
+    <div className="fixed inset-0 bg-fordham-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-fordham-white/10 rounded-[16px] p-8 w-full max-w-2xl relative">
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 text-fordham-white/80 hover:text-fordham-white"
+        >
+          ✕
+        </button>
 
-      <h2 className="text-fordham-black text-2xl font-medium mb-6">Edit Profile</h2>
+        <h2 className="text-fordham-white text-2xl font-medium mb-6">Edit Profile</h2>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-fordham-black/80 text-sm block mb-2">First Name</label>
-            <input
-              type="text"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              className="w-full bg-fordham-brown/5 rounded-[8px] p-2 text-fordham-black border border-fordham-white/20 focus:border-fordham-white/40 outline-none"
-            />
-          </div>
-          <div>
-            <label className="text-fordham-black/80 text-sm block mb-2">Last Name</label>
-            <input
-              type="text"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              className="w-full bg-fordham-brown/5 rounded-[8px] p-2 text-fordham-black border border-fordham-white/20 focus:border-fordham-white/40 outline-none"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="text-fordham-black/80 text-sm block mb-2">
-            Expected Graduation Year
-          </label>
-          <select
-            name="gradYear"
-            value={formData.gradYear}
-            onChange={handleChange}
-            className="w-full bg-fordham-brown/5 rounded-[8px] p-2 text-fordham-black border border-fordham-white/20 focus:border-fordham-white/40 outline-none"
-          >
-            <option value="">Select Year</option>
-            {Array.from({ length: 6 }, (_, i) => new Date().getFullYear() + i).map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="text-fordham-black/80 text-sm block mb-2">Major</label>
-          <select
-            name="major"
-            value={formData.major}
-            onChange={handleChange}
-            className="w-full bg-fordham-brown/5 rounded-[8px] p-2 text-fordham-black border border-fordham-white/20 focus:border-fordham-white/40 outline-none"
-          >
-            <option value="">Select Major</option>
-            {majors?.map((major) => (
-              <option key={major} value={major}>
-                {major}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="text-fordham-black/80 text-sm block mb-2">Interested Positions</label>
-          <div className="grid grid-cols-2 gap-2">
-            {positions?.map((position) => (
-              <button
-                key={position}
-                type="button"
-                onClick={() => handlePositionToggle(position)}
-                className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                  formData.interestedPositions.includes(position)
-                    ? "bg-gradient-to-r from-[#7E1515] via-[#BE2929] to-[#F34848] text-white"
-                    : "bg-fordham-brown/5 text-fordham-black hover:bg-fordham-brown/10"
-                }`}
-              >
-                {position}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex gap-4 mt-4 z-10">
-          <Button
-            type="button"
-            onClick={onClose}
-            text="Cancel"
-            variant="border"
-            className="flex-1 text-fordham-black border-fordham-black"
-          />
-          <Button
-            type="submit"
-            text={loading ? "Saving..." : "Save Changes"}
-            variant="tertiary"
-            className="flex-1"
-            disabled={loading}
-          />
-        </div>
-      </form>
+        <ProfileEditForm
+          initialData={user}
+          mode="edit"
+          onSubmitSuccess={onClose}
+          onCancel={onClose}
+        />
+      </div>
     </div>
   );
 }

@@ -34,7 +34,7 @@ export default function MobileNav({ navData, login }) {
     <header
       className={`
       w-full sticky top-0 z-50 pt-10
-      transition-all duration-500 transform px-5
+      transition-all duration-500 transform px-4
       ${visible ? "translate-y-0" : "-translate-y-full"}
     `}
     >

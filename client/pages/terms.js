@@ -5,6 +5,7 @@ import { IconLoader2 } from "@tabler/icons-react";
 import PageContainer from "@/components/PageContainer";
 import GradientContainer from "@/components/ui/GradientContainer";
 import toast from "react-hot-toast";
+import Button from "@/components/ui/Button";
 
 export default function Terms() {
   const [accepted, setAccepted] = useState(false);
@@ -61,21 +62,23 @@ export default function Terms() {
   return (
     <PageContainer marginBottom={true}>
       <GradientContainer>
-        <div className="w-full flex flex-col items-center gap-6 py-24 px-4 md:px-6">
+        <div className="w-full flex flex-col items-center gap-6 py-20 md:px-10">
           <div className="max-w-3xl text-center">
-            <h1 className="h4 md:h2 text-fordham-white mb-4">Notice About RAM Resume AI Usage</h1>
-            <p className="body-txt-md md:body-txt-lg text-center font-light text-fordham-light-gray/60 max-w-2xl mx-auto">
+            <h1 className="text-xl md:text-3xl font-bold text-fordham-white mb-4">
+              Notice About RAM Resume AI Usage
+            </h1>
+            <p className="body-txt-sm md:body-txt-md text-center font-light text-fordham-light-gray/60 max-w-2xl mx-auto">
               Please read and understand our terms of service before proceeding
             </p>
           </div>
 
-          <div className="w-full max-w-2xl mt-8">
-            <div className="bg-fordham-white/5 p-8 rounded-[24px] backdrop-blur-sm">
-              <div className="space-y-6 text-fordham-white mb-8">
+          <div className="w-full max-w-2xl mt-6">
+            <div className="space-y-6 bg-fordham-white/5 p-6 rounded-[16px]">
+              <div className="space-y-6">
                 <p className="text-fordham-light-gray/80">
                   Please read and acknowledge the following:
                 </p>
-                <ol className="list-decimal list-inside space-y-4 ml-4 text-fordham-light-gray/60">
+                <ol className="list-decimal list-inside space-y-4 text-fordham-light-gray/60">
                   <li>
                     RAMresume uses artificial intelligence to assist with resume optimization.
                   </li>
@@ -86,7 +89,7 @@ export default function Terms() {
                 </ol>
               </div>
 
-              <div className="flex items-center mb-8 bg-fordham-white/5 p-4 rounded-[16px]">
+              <div className="bg-fordham-brown p-4 rounded-[8px] flex items-center">
                 <input
                   type="checkbox"
                   id="terms"
@@ -101,28 +104,20 @@ export default function Terms() {
               </div>
 
               <div className="flex justify-center gap-4">
-                <button
-                  onClick={handleAccept}
-                  disabled={!accepted || isSubmitting}
-                  className={`px-6 py-3 rounded-full text-fordham-white font-medium transition-colors flex items-center
-                    ${
-                      accepted && !isSubmitting
-                        ? "bg-gradient-to-r from-[#7E1515] via-[#BE2929] to-[#F34848] hover:from-[#6E1313] hover:via-[#AE2727] hover:to-[#E34646]"
-                        : "bg-fordham-dark-gray cursor-not-allowed"
-                    }`}
-                >
-                  {isSubmitting && <IconLoader2 className="w-4 h-4 mr-2 animate-spin" />}
-                  Accept
-                </button>
-                <button
+                <Button
                   onClick={handleDecline}
                   disabled={isSubmitting}
-                  className="px-6 py-3 rounded-full bg-fordham-white/5 text-fordham-white 
-                    hover:bg-fordham-white/10 transition-colors disabled:opacity-50 
-                    disabled:cursor-not-allowed"
-                >
-                  Decline
-                </button>
+                  text="Decline"
+                  variant="secondary"
+                />
+                <Button
+                  onClick={handleAccept}
+                  disabled={!accepted || isSubmitting}
+                  text={isSubmitting ? "Accepting..." : "Accept"}
+                  variant="primary"
+                  icon={isSubmitting ? <IconLoader2 className="w-4 h-4 animate-spin" /> : null}
+                  iconPosition="before"
+                />
               </div>
             </div>
           </div>
