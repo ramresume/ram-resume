@@ -47,7 +47,7 @@ export default function Onboarding() {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const response = await api.get("/user");
+        const response = await api.request("/api/user");
         if (response.onboardingCompleted) {
           router.push("/profile");
         }

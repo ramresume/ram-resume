@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
           router.push("/terms");
           toast.error("Please accept the terms to continue");
         } else {
-          toast.success(`Welcome back, ${userData.displayName}!`);
+          toast.success(`Welcome back, ${userData.firstName}!`);
         }
         setIsNewLogin(false);
       }

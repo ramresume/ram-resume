@@ -21,6 +21,12 @@ module.exports = function (passport) {
 
           let user = await User.findOne({ googleId: profile.id });
 
+          if (!user.firstName || !user.lastName) {
+            user.firstName = profile.name.givenName;
+            user.lastName = profile.name.familyName;
+            await user.save();
+          }
+
           if (!user) {
             // New user - they'll need to accept terms later
             user = await User.create({

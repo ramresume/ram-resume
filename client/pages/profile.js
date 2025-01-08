@@ -3,7 +3,13 @@ import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { useRouter } from "next/router";
-import { IconInfoCircle, IconLoader2, IconPencil, IconTrophy } from "@tabler/icons-react";
+import {
+  IconInfoCircle,
+  IconLoader2,
+  IconLogout,
+  IconPencil,
+  IconTrophy,
+} from "@tabler/icons-react";
 import PageContainer from "@/components/PageContainer";
 import GradientContainer from "@/components/ui/GradientContainer";
 import { useApi } from "@/hooks/useApi";
@@ -120,7 +126,7 @@ export default function Profile() {
             </div>
 
             <div>
-              <Button onClick={logout} text="Log out" variant="primary" />
+              <Button icon={<IconLogout />} onClick={logout} text="Log out" variant="primary" />
             </div>
           </div>
 
@@ -150,7 +156,7 @@ export default function Profile() {
                 <h2 className="text-fordham-white text-2xl font-medium">Total Scans Used</h2>
 
                 <div className="flex flex-col justify-center items-center gap-2 w-full">
-                   <div className="flex flex-row items-center gap-2 py-6">
+                  <div className="flex flex-row items-center gap-2 py-6">
                     <IconTrophy className="w-8 h-8 text-fordham-white" />
                     <p className="text-fordham-white text-4xl font-medium">{usage?.totalScans}</p>
                   </div>

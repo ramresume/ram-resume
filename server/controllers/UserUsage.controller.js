@@ -35,8 +35,13 @@ exports.incrementTotalScans = async (usage) => {
     return false;
   }
 
+  if (!usage.totalScans) {
+    //  initialize totalScans if it doesn't exist
+    usage.totalScans = 0;
+  }
+
   try {
-    usage.totalScans = (usage.totalScans || 0) + 1;
+    usage.totalScans++;
     await usage.save();
     return true;
   } catch (error) {
