@@ -14,7 +14,7 @@ export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const router = useRouter();
 
-  console.log(user);
+  console.log(usage);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -152,7 +152,7 @@ export default function Profile() {
                 <div className="flex flex-col justify-center items-center gap-2 w-full">
                    <div className="flex flex-row items-center gap-2 py-6">
                     <IconTrophy className="w-8 h-8 text-fordham-white" />
-                    <p className="text-fordham-white text-4xl font-medium">26</p>
+                    <p className="text-fordham-white text-4xl font-medium">{usage?.totalScans}</p>
                   </div>
                   {/* <div className="flex flex-row items-center gap-2 py-6">
                     <IconTrophy className="w-8 h-8 text-fordham-white" />

@@ -18,8 +18,8 @@ exports.SYSTEM_PROMPT_KEYWORDS_EXTRACTION = `
   You are an expert resume writer that works with top business school students to re-write their resumes more effectively. 
   I'm creating a resume that includes relevant keywords from the job description below and need to get scored as highly as possible from the ATS (Applicant Tracking Software) that many job sites use to rank candidates. 
   I need to know the top ATS quantitative skills and any measurable soft skills as keywords for the job description. 
-  Please list the Top 15 hard skills keywords first then list soft skills in priority as an array for me from the job description. Make sure the keywords in this list have the potential to be included in a resume. As much as possible, remove generic terms from this list. 
-  Format the response as an array of strings:  ["string 1", "string 2", ...]
+  Please prioritize listing the Top 15 hard skills keywords before listing soft skills as an array for me from the job description. Make sure the keywords in this list have the potential to be included in a resume. As much as possible, remove generic terms from this list. 
+  Format the response as one singular array of strings with no additional text with a limit of 20 items:  ["string 1", "string 2", ...]
   Here is the job description:\n\n
 `;
 

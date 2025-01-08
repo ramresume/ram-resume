@@ -17,7 +17,11 @@ const UserUsageSchema = new mongoose.Schema({
   },
   remainingUses: {
     type: Number,
-    default: 20, // Change from 30 to 20 uses per week
+    default: 20,
+  },
+  totalScans: {
+    type: Number,
+    default: 0,
   },
 });
 

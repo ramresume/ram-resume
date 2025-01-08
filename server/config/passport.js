@@ -26,12 +26,12 @@ module.exports = function (passport) {
             user = await User.create({
               googleId: profile.id,
               displayName: profile.displayName,
+              firstName: profile.name.givenName,
+              lastName: profile.name.familyName,
               email: email,
               profilePicture: profile.photos[0].value.replace(/=s\d+-c/, "=s400-c"),
               hasAcceptedTerms: false,
               onboardingCompleted: false,
-              firstName: profile.name.givenName,
-              lastName: profile.name.familyName,
             });
           } else {
             // Update existing user's profile picture

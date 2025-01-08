@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const OpenAI = require("openai");
 const checkUsageLimit = require("../middleware/UserUsage.js");
-const { decrementUsage } = require("../controllers/UserUsage.controller.js");
+const { decrementUsage, incrementTotalScans } = require("../controllers/UserUsage.controller.js");
 const { validateText } = require("../middleware/validateText.js");
 const requireTerms = require("../middleware/requireTerms.js");
 const { ensureAuthenticated } = require("../middleware/auth.js");
@@ -40,9 +40,10 @@ router.post(
       });
 
       await decrementUsage(req.userUsage);
+      await incrementTotalScans(req.userUsage);
 
       let content = completion.choices[0].message.content;
-      //console.log("Raw OpenAI response:", content);
+      // console.log("Raw OpenAI response:", content);
 
       // Remove any markdown formatting
       content = content.replace(/```json\n|\n```/g, "");

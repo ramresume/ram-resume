@@ -28,3 +28,19 @@ exports.decrementUsage = async (usage) => {
   }
   return false;
 };
+
+exports.incrementTotalScans = async (usage) => {
+  if (!usage) {
+    console.error("Usage object is null or undefined");
+    return false;
+  }
+
+  try {
+    usage.totalScans = (usage.totalScans || 0) + 1;
+    await usage.save();
+    return true;
+  } catch (error) {
+    console.error("Error incrementing totalScans:", error);
+    return false;
+  }
+};

@@ -40,6 +40,7 @@ router.get("/usage", isAuthenticated, async (req, res) => {
     res.json({
       remainingUses: usage.remainingUses,
       resetDate: usage.resetDate,
+      totalScans: usage.totalScans,
     });
   } catch (error) {
     res.status(500).json({ error: "Error fetching usage data" });
