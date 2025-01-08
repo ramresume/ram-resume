@@ -9,6 +9,7 @@ const Button = ({
   className = "",
   icon = null,
   iconPosition = "after", // 'before' or 'after'
+  pressable = true,
 }) => {
   const [isPressed, setIsPressed] = useState(false);
 
@@ -25,6 +26,14 @@ const Button = ({
     secondary: {
       default: "bg-transparent text-fordham-white border-[1px] border-fordham-white",
       hover: "bg-fordham-white bg-opacity-[5%] hover:text-fordham-gray",
+      pressed:
+        "border-opacity-0 bg-fordham-white bg-opacity-[5%] outline outline-[6px] outline-fordham-white/20 scale-95 shadow-inner",
+      disabled:
+        "font-medium outline outline-fordham-dark-gray outline-[1px] text-fordham-dark-gray cursor-not-allowed",
+    },
+    border: {
+      default: "bg-transparent text-fordham-black border-[1px] border-fordham-black",
+      hover: "bg-fordham-black bg-opacity-[5%] hover:text-fordham-black",
       pressed:
         "border-opacity-0 bg-fordham-white bg-opacity-[5%] outline outline-[6px] outline-fordham-white/20 scale-95 shadow-inner",
       disabled:
@@ -88,9 +97,9 @@ const Button = ({
       onClick={disabled ? undefined : onClick}
       className={`${getButtonStyles()} ${className}`}
       disabled={disabled}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={() => setIsPressed(false)}
+      onMouseDown={pressable ? handleMouseDown : undefined}
+      onMouseUp={pressable ? handleMouseUp : undefined}
+      onMouseLeave={pressable ? () => setIsPressed(false) : undefined}
     >
       {renderContent()}
     </button>

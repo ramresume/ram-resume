@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { AuthProvider } from "@/context/AuthContext";
-import { Inter } from "next/font/google";
+import RouteGuard from "@/components/RouteGuard";
 import "@/styles/globals.css";
 import Layout from "@/components/Layout.jsx";
 import { client } from "@/src/sanity/lib/client.js";
@@ -8,11 +8,6 @@ import { Toaster } from "react-hot-toast";
 import posthog from "posthog-js";
 import { PostHogProvider } from "posthog-js/react";
 import { useRouter } from "next/router";
-
-const inter_init = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
 
 export default function App({ Component, pageProps }) {
   const [footerData, setFooterData] = useState(null);
@@ -63,7 +58,9 @@ export default function App({ Component, pageProps }) {
   return (
     <PostHogProvider client={posthog}>
       <AuthProvider>
-        <main className={inter_init.className}>
+        <RouteGuard>
+
+        <main>
           <Layout footerData={footerData}>
             <Component {...pageProps} />
           </Layout>
@@ -83,6 +80,7 @@ export default function App({ Component, pageProps }) {
             },
           }}
         />
+        </RouteGuard>
       </AuthProvider>
     </PostHogProvider>
   );

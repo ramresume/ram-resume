@@ -12,7 +12,7 @@ module.exports = function (passport) {
       async (accessToken, refreshToken, profile, done) => {
         try {
           const email = profile.emails[0].value;
-          // Uncomment to restrict authentication to Fordham emails
+          // Uncomment to restrict authentication to Fordham emails, another check in User model
           // if (!email.endsWith("@fordham.edu")) {
           //   return done(null, false, {
           //     message: "Only Fordham University personnel are allowed.",
@@ -29,6 +29,9 @@ module.exports = function (passport) {
               email: email,
               profilePicture: profile.photos[0].value.replace(/=s\d+-c/, "=s400-c"),
               hasAcceptedTerms: false,
+              onboardingCompleted: false,
+              firstName: profile.name.givenName,
+              lastName: profile.name.familyName,
             });
           } else {
             // Update existing user's profile picture
