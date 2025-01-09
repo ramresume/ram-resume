@@ -73,7 +73,6 @@ export default function FileUpload({ onSuccess }) {
         });
       }
 
-      console.log("File uploaded:", response);
       setFile(null);
       if (onSuccess) onSuccess();
     } catch (error) {

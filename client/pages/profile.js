@@ -10,19 +10,21 @@ import {
   IconLogout,
   IconPencil,
   IconTrophy,
-  IconUpload,
+  IconX,
 } from "@tabler/icons-react";
 import PageContainer from "@/components/PageContainer";
 import GradientContainer from "@/components/ui/GradientContainer";
 import ProfileEditForm from "@/components/Profile/ProfileEditForm";
 import { useApi } from "@/hooks/useApi";
 import ResumeModal from "@/components/Profile/ResumeModal";
+import ScanHistory from "@/components/Profile/ScanHistory";
 
 export default function Profile() {
   const { user, loading, logout, usage, checkUsage } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const [isScanHistoryOpen, setIsScanHistoryOpen] = useState(false);
   const [resume, setResume] = useState(null);
   const router = useRouter();
   const api = useApi();
@@ -32,7 +34,7 @@ export default function Profile() {
       router.push("/");
     }
     // Lock body scroll when modal is open
-    if (isEditing) {
+    if (isEditing || isResumeOpen || isScanHistoryOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
@@ -40,12 +42,11 @@ export default function Profile() {
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [user, loading, router, isEditing]);
+  }, [user, loading, router, isEditing, isResumeOpen, isScanHistoryOpen]);
 
   async function getResume() {
     const resume = await api.request("/api/files");
     setResume(resume);
-    console.log(resume);
   }
 
   useEffect(() => {
@@ -73,6 +74,10 @@ export default function Profile() {
     setIsResumeOpen(true);
   }
 
+  function handleScanHistoryOpen() {
+    setIsScanHistoryOpen(true);
+  }
+
   return (
     <GradientContainer>
       <PageContainer marginBottom={true} marginTop={false}>
@@ -82,7 +87,7 @@ export default function Profile() {
             Manage your profile and settings here.
           </p>
         </div>
-        <div className={`grid grid-cols-1 md:grid-cols-3 gap-6`}>
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-10`}>
           {/* grid left */}
           <div className="flex flex-col gap-6 md:col-span-2">
             <div className="flex flex-col md:flex-row items-center gap-6 bg-fordham-brown p-6 rounded-[16px] backdrop-blur-sm h-fit w-full">
@@ -206,6 +211,7 @@ export default function Profile() {
             </div>
           </div>
         </div>
+        <ScanHistory setOpen={setIsScanHistoryOpen} />
       </PageContainer>
       {isEditing && (
         <>
@@ -227,7 +233,7 @@ function EditProfile({ user, onClose }) {
         onClick={onClose}
         className="absolute top-6 right-6 text-fordham-white/80 hover:text-fordham-white"
       >
-        ✕
+        <IconX className="w-6 h-6" />
       </button>
 
       <h2 className="text-fordham-white text-2xl font-medium mb-6">Edit Profile</h2>

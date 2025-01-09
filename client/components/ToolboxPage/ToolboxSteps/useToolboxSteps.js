@@ -14,6 +14,10 @@ export const useToolboxSteps = ({ state, updateState, navigateStep }) => {
           setJobDescription={(value) => updateState({ jobDescription: value })}
           setKeywords={(keywords) => updateState({ keywords })}
           incrementStep={() => navigateStep("next")}
+          company={state.company}
+          setCompany={(value) => updateState({ company: value })}
+          jobTitle={state.jobTitle}
+          setJobTitle={(value) => updateState({ jobTitle: value })}
         />
       ),
       2: (

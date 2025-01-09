@@ -6,11 +6,10 @@ const { decrementUsage, incrementTotalScans } = require("../controllers/UserUsag
 const { validateText } = require("../middleware/validateText.js");
 const requireTerms = require("../middleware/requireTerms.js");
 const { ensureAuthenticated } = require("../middleware/auth.js");
-
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const { SYSTEM_PROMPT_KEYWORDS_EXTRACTION } = require("../config/constants");
-
 const { mockKeywords } = require("../mockdata");
+const { createScanHistory } = require("../controllers/ScanHistory.controller.js");
 
 router.post(
   "/extract-keywords",
@@ -20,7 +19,7 @@ router.post(
   checkUsageLimit,
   async (req, res) => {
     try {
-      const { jobDescription } = req.body;
+      const { jobDescription, company, jobTitle } = req.body;
       // console.log("Received job description:", jobDescription);
 
       // console.log("Sending request to OpenAI");
@@ -66,8 +65,15 @@ router.post(
       // Uncomment the following line to use mock data
       // const keywords = mockKeywords;
 
+      // Save scan history
+      const scanId = await createScanHistory(req.user._id, {
+        jobTitle: jobTitle,
+        company: company,
+        keywords: keywords,
+      });
+
       // console.log("Extracted keywords:", keywords);
-      res.json({ keywords });
+      res.json({ keywords, scanId });
     } catch (error) {
       console.error("Error extracting keywords:", error);
       res.status(500).json({ error: "Failed to extract keywords", details: error.message });

@@ -26,7 +26,6 @@ export default function ResumeModal({ active, setActive }) {
         responseType: "blob",
       });
       const url = URL.createObjectURL(blob);
-      console.log(url);
       setPdfUrl(url);
     } catch (error) {
       console.error("Error fetching PDF:", error);

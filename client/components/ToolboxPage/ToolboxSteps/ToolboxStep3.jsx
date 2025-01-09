@@ -36,7 +36,6 @@ as they typically don't highlight specific skills. Only resumes in English, plea
           });
           setUploadedResume(pdfResponse);
           setResumeInfo(response[0]);
-          console.log(pdfResponse);
         }
       } catch (error) {
         console.error("Error fetching resume:", error);

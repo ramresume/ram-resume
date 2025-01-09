@@ -64,6 +64,7 @@ app.use("/api", require("./routes/extract-keywords"));
 app.use("/api", require("./routes/resume"));
 app.use("/api", require("./routes/cover-letter"));
 app.use("/api", require("./routes/file"));
+app.use("/api", require("./routes/scan-history"));
 // Test route
 app.get("/", (req, res) => {
   res.send("AI Career Toolbox server is running!");

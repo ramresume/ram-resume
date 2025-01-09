@@ -15,9 +15,6 @@ const isAuthenticated = (req, res, next) => {
 
 // User route to get user data
 router.get("/user", isAuthenticated, (req, res) => {
-  // console.log("Session:", req.session);
-  // console.log("User:", req.user);
-  // console.log("User route accessed, user:", req.user);
   res.json({
     id: req.user.id,
     email: req.user.email,
@@ -57,7 +54,7 @@ router.put("/user", isAuthenticated, async (req, res) => {
       major,
       interestedPositions,
       onboardingCompleted,
-      onboardingPartiallyCompleted
+      onboardingPartiallyCompleted,
     } = req.body;
 
     const updateData = {};
@@ -66,7 +63,7 @@ router.put("/user", isAuthenticated, async (req, res) => {
     if (gradYear) updateData.gradYear = gradYear;
     if (major) updateData.major = major;
     if (interestedPositions) updateData.interestedPositions = interestedPositions;
-    
+
     // Handle onboarding states
     if (onboardingPartiallyCompleted) {
       updateData.onboardingPartiallyCompleted = true;
@@ -87,7 +84,7 @@ router.put("/user", isAuthenticated, async (req, res) => {
       major: updatedUser.major,
       interestedPositions: updatedUser.interestedPositions,
       onboardingCompleted: updatedUser.onboardingCompleted,
-      onboardingPartiallyCompleted: updatedUser.onboardingPartiallyCompleted
+      onboardingPartiallyCompleted: updatedUser.onboardingPartiallyCompleted,
     });
   } catch (error) {
     console.error("Error updating user:", error);

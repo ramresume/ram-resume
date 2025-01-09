@@ -1,15 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const OpenAI = require("openai");
-
 const { validateText } = require("../middleware/validateText.js");
 const requireTerms = require("../middleware/requireTerms.js");
 const { ensureAuthenticated } = require("../middleware/auth.js");
-
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const { SYSTEM_PROMPT_RESUME_ENHANCER } = require("../config/constants");
-
-const { mockBulletPoints } = require("../mockdata");
+const { updateScanHistory } = require("../controllers/ScanHistory.controller.js");
 
 router.post(
   "/resume",
@@ -20,7 +17,7 @@ router.post(
     try {
       // console.log("Received request:", req.body);
 
-      const { resume, jobDescription } = req.body;
+      const { resume, jobDescription, scanId } = req.body;
 
       if (!resume || !jobDescription) {
         return res.status(400).json({ error: "Both resume and job description are required" });
@@ -53,19 +50,37 @@ router.post(
       const jsonEnd = content.lastIndexOf("]") + 1;
       const jsonString = content.substring(jsonStart, jsonEnd);
 
-      const enhancedBulletPoints = JSON.parse(jsonString);
+      const enhancedBullets = JSON.parse(jsonString);
 
       // Remove the line below to use the AI API
       // const enhancedBulletPoints = mockBulletPoints;
       // console.log("enhancedBulletPoints:", enhancedBulletPoints);
 
-      res.json(enhancedBulletPoints);
+      // Parse the enhancedBullets if it's a string
+      let parsedBullets = enhancedBullets;
+      if (typeof enhancedBullets === "string") {
+        parsedBullets = JSON.parse(enhancedBullets);
+      }
+
+      // Transform the data into the correct format
+      const formattedBullets = parsedBullets.map((item) => {
+        const company = Object.keys(item)[0];
+        return {
+          company,
+          bullets: item[company],
+        };
+      });
+
+      // Update scan history with enhanced bullets
+      await updateScanHistory(scanId, {
+        originalResume: resume,
+        enhancedBullets: formattedBullets,
+      });
+
+      res.json({ formattedBullets, scanId });
     } catch (error) {
       console.error("Error enhancing resume:", error);
-      res.status(500).json({
-        error: "Failed to enhance resume",
-        details: error.message,
-      });
+      res.status(500).json({ error: "Failed to enhance resume" });
     }
   }
 );

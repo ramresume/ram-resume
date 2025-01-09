@@ -17,11 +17,14 @@ export default function Toolbox() {
   const { user, loading: authLoading } = useAuth();
   const [state, setState] = useState({
     toolboxActive: true,
-    activeStep: 3,
+    activeStep: 1,
     exitModalActive: false,
     jobDescription: "",
     keywords: [],
     resume: "",
+    company: "",
+    jobTitle: "",
+    scanId: "",
     bulletPoints: [],
     pendingNavigation: null,
   });
@@ -32,8 +35,11 @@ export default function Toolbox() {
     exitModalActive,
     jobDescription,
     keywords,
+    scanId,
     resume,
     bulletPoints,
+    company,
+    jobTitle,
     pendingNavigation,
   } = state;
 
@@ -106,23 +112,20 @@ export default function Toolbox() {
       if (activeStep === 1) {
         const data = await request("/api/extract-keywords", {
           method: "POST",
-          body: JSON.stringify({ jobDescription }),
+          body: JSON.stringify({ jobDescription, company, jobTitle }),
         });
-        updateState({ keywords: data.keywords });
+        updateState({ keywords: data.keywords, scanId: data.scanId });
       } else if (activeStep === 3) {
         const data = await request("/api/resume", {
           method: "POST",
-          body: JSON.stringify({ jobDescription, resume }),
+          body: JSON.stringify({ jobDescription, resume, scanId }),
         });
-        updateState({ bulletPoints: data });
+        updateState({ bulletPoints: data, scanId: data.scanId });
       } else if (activeStep === 4) {
         const data = await request("/api/cover-letter", {
           method: "POST",
-          body: JSON.stringify({ jobDescription, resume }),
+          body: JSON.stringify({ jobDescription, resume, scanId }),
         });
-
-        console.log(activeStep + data);
-
         updateState({ coverLetter: data.coverLetter });
       }
       navigateStep("next");
