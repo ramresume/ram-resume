@@ -76,8 +76,8 @@ const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="px-4 fixed inset-0 top-10 md:top-20 bg-fordham-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-fordham-brown rounded-[16px] w-full max-w-3xl max-h-[80vh] overflow-y-auto relative">
+    <div className="px-4 fixed inset-0 bg-fordham-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="top-4 md:top-8 bg-fordham-brown rounded-[16px] w-full max-w-3xl max-h-[80vh] overflow-y-auto relative">
         <button
           onClick={onClose}
           className="absolute top-6 right-6 text-fordham-white/80 hover:text-fordham-white"

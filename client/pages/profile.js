@@ -211,6 +211,8 @@ export default function Profile() {
             </div>
           </div>
         </div>
+        
+        {/* Scan history */}
         <ScanHistory setOpen={setIsScanHistoryOpen} />
       </PageContainer>
       {isEditing && (
