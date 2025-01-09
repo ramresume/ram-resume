@@ -6,7 +6,7 @@ import ProfileEditForm from "@/components/Profile/ProfileEditForm";
 import { useAuth } from "@/context/AuthContext";
 import FileUpload from "@/components/ui/FileUpload";
 import toast from "react-hot-toast";
-  
+
 export default function Onboarding() {
   const router = useRouter();
   const { logout, user } = useAuth();
