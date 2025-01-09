@@ -10,7 +10,7 @@ const Footer = ({ data }) => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full relative overflow-hidden pt-20 mb-10md:mb-20 border-t border-white/20">
+    <footer className="w-full relative overflow-hidden pt-20 mb-10 md:mb-20 border-t border-white/20">
       <div className="container w-full mx-auto px-4 md:px-0 relative">
         <div className="flex flex-col md:flex-row gap-20">
           {/* Brand Section */}

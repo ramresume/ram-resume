@@ -17,7 +17,7 @@ const getPreviewText = (body) => {
 
 const BlogCard = ({ title, body, slug, mainImage }) => (
   <div className="md:min-w-full min-w-[360px] flex flex-col h-full gap-4">
-    <div className="w-full h-44 relative">
+    <div className="w-full h-[200px] sm:h-[300px] md:h-[200px] relative">
       <Image
         src={urlFor(mainImage).url()}
         alt={mainImage.alt || title}

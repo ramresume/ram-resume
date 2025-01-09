@@ -7,6 +7,7 @@ import { IconSearch } from "@tabler/icons-react";
 import Image from "next/image";
 import { urlFor } from "@/src/sanity/lib/image";
 import Link from "next/link";
+import Button from "@/components/ui/Button";
 
 export default function Blog({ BlogPageData, blogPageContent }) {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -88,7 +89,7 @@ export default function Blog({ BlogPageData, blogPageContent }) {
             {filteredPosts.length > 0 && !searchTerm && activeCategory === "All" && (
               <div className="mb-10">
                 <h2 className="text-2xl font-bold text-fordham-white mb-6">Featured Post</h2>
-                <div className="featured-post">
+                <div className="h-full">
                   {/* You'll need to create a FeaturedBlogCard component */}
                   <FeaturedBlogCard {...filteredPosts[0]} />
                 </div>
@@ -111,29 +112,32 @@ export default function Blog({ BlogPageData, blogPageContent }) {
 // Create a new FeaturedBlogCard component
 const FeaturedBlogCard = (post) => {
   return (
-    <div className="group relative overflow-hidden rounded-[16px] bg-fordham-white/5 hover:bg-fordham-white/10 transition-colors">
-      <div className="flex flex-col md:flex-row gap-6 p-6">
+    <div className="flex h-full group relative overflow-hidden rounded-[16px] bg-fordham-white/5 hover:bg-fordham-white/10 transition-colors">
+      <div className="flex flex-col md:flex-row gap-6 p-6 h-full">
         {post.mainImage && (
           <div className="md:w-1/2">
             <Image
               src={urlFor(post.mainImage).url()}
               alt={post.title}
               width={600}
-              height={400}
-              className="rounded-[16px] object-cover w-full h-[200px] group-hover:scale-105 transition-transform duration-300"
+              height={300}
+              className="rounded-[16px] object-cover w-full h-[200px] sm:h-[300px] md:h-[300px]"
             />
           </div>
         )}
-        <div className="md:w-1/2 flex flex-col justify-center">
-          <h3 className="text-2xl font-bold text-fordham-white mb-4 transition-colors">{post.title}</h3>
+        <div className="md:w-1/2 flex flex-col h-full">
+          <h3 className="text-2xl font-bold text-fordham-white mb-4 transition-colors">
+            {post.title}
+          </h3>
           <p className="text-fordham-light-gray/60 mb-6 line-clamp-3">{post.body}</p>
+
           <div className="flex items-center gap-4">
             {post.author?.image && (
               <Image
                 src={urlFor(post.author.image).url()}
                 alt={post.author.name}
-                width={40}
-                height={40}
+                width={100}
+                height={100}
                 className="rounded-full"
               />
             )}
@@ -144,13 +148,10 @@ const FeaturedBlogCard = (post) => {
               </p>
             </div>
           </div>
-          <Link
-            href={`${post.slug.current}`}
-            className="ml-auto px-6 py-2 rounded-full bg-fordham-white/10 hover:bg-fordham-white/20 text-fordham-white transition-colors"
-          >
-            Read more
-          </Link>
         </div>
+        <Link href={`${post.slug.current}`} className="md:absolute bottom-6 right-6">
+          <Button text="Read more" variant="secondary" className="w-full" />
+        </Link>
       </div>
     </div>
   );
