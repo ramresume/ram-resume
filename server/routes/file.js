@@ -4,6 +4,7 @@ const File = require("../models/File");
 const upload = require("../middleware/upload");
 const { ensureAuthenticated } = require("../middleware/auth");
 const multerErrorHandler = require("../middleware/multerErrorHandler");
+const pdf = require("pdf-parse");
 
 router.post(
   "/upload",
@@ -70,6 +71,20 @@ router.get("/files/download", ensureAuthenticated, async (req, res) => {
   } catch (error) {
     console.error("Download error:", error);
     res.status(500).json({ error: "Error downloading file" });
+  }
+});
+
+router.post("/extract-text", ensureAuthenticated, upload.single("file"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const data = await pdf(req.file.buffer);
+    res.json({ text: data.text });
+  } catch (error) {
+    console.error("Error extracting text:", error);
+    res.status(500).json({ error: "Error extracting text from PDF" });
   }
 });
 

@@ -17,7 +17,7 @@ export default function Toolbox() {
   const { user, loading: authLoading } = useAuth();
   const [state, setState] = useState({
     toolboxActive: true,
-    activeStep: 1,
+    activeStep: 3,
     exitModalActive: false,
     jobDescription: "",
     keywords: [],

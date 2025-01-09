@@ -4,7 +4,7 @@ import Button from "@/components/ui/Button";
 import FileUpload from "@/components/ui/FileUpload";
 import { useApi } from "@/hooks/useApi";
 
-export default function ResumeModal({ setIsResumeOpen }) {
+export default function ResumeModal({ active, setActive }) {
   const [showUpload, setShowUpload] = useState(false);
   const [resume, setResume] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
@@ -85,7 +85,7 @@ export default function ResumeModal({ setIsResumeOpen }) {
     <div className="fixed inset-0 bg-fordham-black/50 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-fordham-brown rounded-[16px] p-6 w-full max-w-3xl h-fit relative">
         <button
-          onClick={() => setIsResumeOpen(false)}
+          onClick={() => setActive(false)}
           className="absolute top-6 right-6 text-fordham-white/80 hover:text-fordham-white"
         >
           <IconX className="w-6 h-6" />

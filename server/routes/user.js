@@ -50,8 +50,15 @@ router.get("/usage", isAuthenticated, async (req, res) => {
 // PUT route to update user profile
 router.put("/user", isAuthenticated, async (req, res) => {
   try {
-    const { firstName, lastName, gradYear, major, interestedPositions, onboardingCompleted } =
-      req.body;
+    const {
+      firstName,
+      lastName,
+      gradYear,
+      major,
+      interestedPositions,
+      onboardingCompleted,
+      onboardingPartiallyCompleted
+    } = req.body;
 
     const updateData = {};
     if (firstName) updateData.firstName = firstName;
@@ -59,7 +66,15 @@ router.put("/user", isAuthenticated, async (req, res) => {
     if (gradYear) updateData.gradYear = gradYear;
     if (major) updateData.major = major;
     if (interestedPositions) updateData.interestedPositions = interestedPositions;
-    if (onboardingCompleted) updateData.onboardingCompleted = true;
+    
+    // Handle onboarding states
+    if (onboardingPartiallyCompleted) {
+      updateData.onboardingPartiallyCompleted = true;
+    }
+    if (onboardingCompleted) {
+      updateData.onboardingCompleted = true;
+      updateData.onboardingPartiallyCompleted = false;
+    }
 
     const updatedUser = await updateUser(req.user._id, updateData);
     res.json({
@@ -71,6 +86,8 @@ router.put("/user", isAuthenticated, async (req, res) => {
       gradYear: updatedUser.gradYear,
       major: updatedUser.major,
       interestedPositions: updatedUser.interestedPositions,
+      onboardingCompleted: updatedUser.onboardingCompleted,
+      onboardingPartiallyCompleted: updatedUser.onboardingPartiallyCompleted
     });
   } catch (error) {
     console.error("Error updating user:", error);

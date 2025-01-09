@@ -10,30 +10,23 @@ import Button from "@/components/ui/Button";
 export default function Terms() {
   const [accepted, setAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isRedirecting, setIsRedirecting] = useState(false);
   const { user, loading, acceptTerms, logout } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    // Only redirect if:
-    // 1. Not currently in the process of accepting terms
-    // 2. Not loading
-    // 3. Either no user or user has previously accepted terms (not just now)
-    if (!isRedirecting && !loading && (!user || (user.hasAcceptedTerms && !isSubmitting))) {
+    if (!loading && !isSubmitting && (!user || user.hasAcceptedTerms)) {
       router.replace("/");
     }
-  }, [user, loading, router, isRedirecting, isSubmitting]);
+  }, [user, loading, router, isSubmitting]);
 
   const handleAccept = async () => {
     if (!accepted || isSubmitting) return;
 
     try {
       setIsSubmitting(true);
-      setIsRedirecting(true); // Prevent the useEffect from redirecting
       await acceptTerms();
       router.push("/onboarding");
     } catch (error) {
-      setIsRedirecting(false);
       setIsSubmitting(false);
       toast.error("Failed to accept terms. Please try again.");
     }
@@ -41,12 +34,12 @@ export default function Terms() {
 
   const handleDecline = async () => {
     try {
-      setIsRedirecting(true);
+      setIsSubmitting(true);
       await logout();
       toast.error("You must accept the terms to use RAMresume.");
       router.replace("/");
     } catch (error) {
-      setIsRedirecting(false);
+      setIsSubmitting(false);
       toast.error("An error occurred. Please try again.");
     }
   };

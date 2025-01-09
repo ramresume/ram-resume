@@ -57,10 +57,9 @@ const CustomSelect = ({ options, value, onChange, placeholder, name }) => {
                 setIsOpen(false);
               }}
               className={`w-full px-5 py-3 text-left hover:bg-fordham-white/5
-                ${
-                  value === option
-                    ? "bg-fordham-white/10 text-fordham-white"
-                    : "text-fordham-gray/60 hover:text-fordham-white"
+                ${value === option
+                  ? "bg-fordham-white/10 text-fordham-white"
+                  : "text-fordham-gray/60 hover:text-fordham-white"
                 }`}
             >
               {option}
@@ -88,7 +87,7 @@ export default function UserProfileForm({
     gradYear: initialData.gradYear || "",
     major: initialData.major || "",
     interestedPositions: initialData.interestedPositions || [],
-    onboardingCompleted: mode === "onboarding" ? true : undefined,
+    onboardingCompleted: mode === "onboarding" ? false : undefined,
   });
 
   const handleInputChange = (e) => {
@@ -126,21 +125,24 @@ export default function UserProfileForm({
     }
 
     try {
-      await api
-        .request("/api/user", {
-          method: "PUT",
-          body: JSON.stringify(formData),
-        })
-        .then(() => {
-          onSubmitSuccess?.();
-          toast.success(
-            mode === "onboarding" ? "Profile setup completed!" : "Profile updated successfully"
-          );
-        });
+      await api.request("/api/user", {
+        method: "PUT",
+        body: JSON.stringify(formData),
+      });
+      
+      setLoading(false);
+      toast.success(
+        mode === "onboarding" ? "Profile setup completed!" : "Profile updated successfully"
+      );
+      
+      if (onSubmitSuccess) {
+        setTimeout(() => {
+          onSubmitSuccess();
+        }, 100);
+      }
     } catch (error) {
       setError("Failed to update profile. Please try again.");
       console.error("Update error:", error);
-    } finally {
       setLoading(false);
     }
   };
@@ -157,10 +159,7 @@ export default function UserProfileForm({
         {/* Name Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label
-              htmlFor="firstName"
-              className="block text-md font-medium text-fordham-white mb-2"
-            >
+            <label htmlFor="firstName" className="block text-md font-medium text-fordham-white mb-2">
               First Name
             </label>
             <input
@@ -195,13 +194,10 @@ export default function UserProfileForm({
           </div>
         </div>
 
-        {/* Graduation Year */}
+        {/* Graduation Year and Major */}
         <div className="w-full flex flex-col md:flex-row gap-6">
           <div className="w-full">
-            <label
-              htmlFor="gradYear"
-              className="block text-md font-medium text-fordham-white mb-2 w-full"
-            >
+            <label htmlFor="gradYear" className="block text-md font-medium text-fordham-white mb-2 w-full">
               Expected Graduation Year
             </label>
             <CustomSelect
@@ -213,12 +209,8 @@ export default function UserProfileForm({
             />
           </div>
 
-          {/* Major Selection */}
           <div className="w-full">
-            <label
-              htmlFor="major"
-              className="block text-md font-medium text-fordham-white mb-2 w-full"
-            >
+            <label htmlFor="major" className="block text-md font-medium text-fordham-white mb-2 w-full">
               Major
             </label>
             <CustomSelect
@@ -244,10 +236,9 @@ export default function UserProfileForm({
                 onClick={() => handlePositionToggle(position)}
                 className={`px-5 py-3 rounded-[8px] transition-[background,transform,outline] 
                   duration-50 ease-in-out flex items-center justify-center
-                  ${
-                    formData.interestedPositions.includes(position)
-                      ? "bg-fordham-white/10 text-fordham-white hover:text-fordham-light-gray"
-                      : "bg-fordham-black/50 text-fordham-gray/60 hover:text-fordham-white hover:bg-fordham-white/5"
+                  ${formData.interestedPositions.includes(position)
+                    ? "bg-fordham-white/10 text-fordham-white hover:text-fordham-light-gray"
+                    : "bg-fordham-black/50 text-fordham-gray/60 hover:text-fordham-white hover:bg-fordham-white/5"
                   }`}
               >
                 {position}
@@ -278,7 +269,7 @@ export default function UserProfileForm({
         )}
         <Button
           type="submit"
-          text={loading ? "Saving..." : mode === "onboarding" ? "Submit" : "Save"}
+          text={loading ? "Saving..." : mode === "onboarding" ? "Continue" : "Save"}
           variant="primary"
           disabled={loading}
           className="flex-1"

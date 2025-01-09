@@ -31,12 +31,12 @@ export default function RouteGuard({ children }) {
         return;
       }
 
-      // If user is on terms or onboarding page but has completed them, redirect to home
+      // If user is on terms or onboarding page but has completed them, redirect to profile
       if (
         (router.pathname === "/terms" && user.hasAcceptedTerms) ||
         (router.pathname === "/onboarding" && user.onboardingCompleted)
       ) {
-        router.replace("/");
+        router.replace("/profile");
         return;
       }
     }

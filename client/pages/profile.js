@@ -215,7 +215,7 @@ export default function Profile() {
         </>
       )}
 
-      {isResumeOpen && <ResumeModal setIsResumeOpen={setIsResumeOpen} />}
+      {isResumeOpen && <ResumeModal active={isResumeOpen} setActive={setIsResumeOpen} />}
     </GradientContainer>
   );
 }

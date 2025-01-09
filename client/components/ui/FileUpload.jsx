@@ -2,12 +2,14 @@ import { useState, useCallback } from "react";
 import { useApi } from "@/hooks/useApi";
 import { IconUpload, IconX } from "@tabler/icons-react";
 import Button from "@/components/ui/Button";
+import { usePathname } from "next/navigation";
 
 export default function FileUpload({ onSuccess }) {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [dragActive, setDragActive] = useState(false);
+  const pathname = usePathname();
   const api = useApi();
 
   const handleDrag = useCallback((e) => {
@@ -60,6 +62,16 @@ export default function FileUpload({ onSuccess }) {
         body: formData,
         headers: {},
       });
+
+      // Mark onboarding as completed
+      if (pathname === "/onboarding") {
+        await api.request("/api/user", {
+          method: "PUT",
+          body: JSON.stringify({
+            onboardingCompleted: true,
+          }),
+        });
+      }
 
       console.log("File uploaded:", response);
       setFile(null);

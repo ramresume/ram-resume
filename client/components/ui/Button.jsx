@@ -32,7 +32,7 @@ const Button = ({
         "font-medium outline outline-fordham-dark-gray outline-[1px] text-fordham-dark-gray cursor-not-allowed",
     },
     border: {
-      default: "bg-transparent text-fordham-black border-[1px] border-fordham-black",
+      default: "bg-transparent text-fordham-black outline outline-[1px] outline-fordham-black",
       hover: "bg-fordham-black bg-opacity-[5%] hover:text-fordham-black",
       pressed:
         "border-opacity-0 bg-fordham-white bg-opacity-[5%] outline outline-[6px] outline-fordham-white/20 scale-95 shadow-inner",
