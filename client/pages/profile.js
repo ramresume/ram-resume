@@ -53,18 +53,18 @@ export default function Profile() {
   return (
     <GradientContainer>
       <PageContainer marginBottom={true} marginTop={false}>
-        <div className="w-full flex flex-col items-center gap-2 py-20 px-10">
+        <div className="w-full flex flex-col items-center gap-2 py-20 md:px-10">
           <h1 className="h4 md:h3 text-fordham-white">Profile</h1>
           <p className="body-txt-md px-0 md:px-20 text-center font-light text-fordham-light-gray/60">
             Manage your profile and settings here.
           </p>
         </div>
-        <div className={`grid grid-cols-3 gap-6`}>
+        <div className={`grid grid-cols-1 md:grid-cols-3 gap-6`}>
           {/* grid left */}
-          <div className="flex flex-col gap-6 col-span-2">
-            <div className="flex flex-row items-center gap-6 bg-fordham-brown p-6 rounded-[16px] backdrop-blur-sm h-fit">
+          <div className="flex flex-col gap-6 md:col-span-2">
+            <div className="flex flex-col md:flex-row items-center gap-6 bg-fordham-brown p-6 rounded-[16px] backdrop-blur-sm h-fit w-full">
               {/* Profile picture */}
-              <div className="flex flex-col justify-center items-center rounded-full overflow-hidden w-[160px] h-[160px]">
+              <div className="flex flex-col justify-center items-center rounded-full overflow-hidden w-[120px] h-[120px] md:w-[160px] md:h-[160px]">
                 <Image
                   src={user.profilePicture}
                   alt={user.firstName + " " + user.lastName}
@@ -77,12 +77,12 @@ export default function Profile() {
               </div>
 
               {/* Profile info */}
-              <div className="flex flex-col justify-start items-start gap-6">
+              <div className="flex flex-col justify-start items-start gap-6 w-full">
                 <div className="flex flex-col justify-start items-start gap-2">
                   <h1 className="text-fordham-white text-2xl font-medium">
                     {user.firstName} {user.lastName}
                   </h1>
-                  <p className="text-fordham-white">{user.email}</p>
+                  <p className="text-fordham-white">Email: {user.email}</p>
                   <p className="text-fordham-white">Fordham University</p>
                 </div>
 
@@ -100,29 +100,38 @@ export default function Profile() {
               </div>
 
               {/* Profile actions */}
-              <div className="absolute top-4 right-4">
+              <div className="absolute top-4 right-4 flex flex-col items-center gap-4">
                 <button
                   className="bg-fordham-white/5 rounded-[8px] p-4 hover:bg-fordham-white/10 hover:cursor-pointer"
                   onClick={handleEdit}
                 >
                   <IconPencil className="w-6 h-6 hover:cursor-pointer hover:text-fordham-white text-fordham-light-gray" />
                 </button>
+
+                <button className="md:hidden bg-fordham-white rounded-[8px] p-4" onClick={logout}>
+                  <IconLogout className="w-6 h-6 text-fordham-black" />
+                </button>
               </div>
             </div>
 
-            <div className="flex flex-row items-center gap-6 bg-fordham-brown p-6 rounded-[16px] backdrop-blur-sm w-full">
+            <div className="flex flex-col items-center gap-6 bg-fordham-brown p-6 rounded-[16px] backdrop-blur-sm w-full">
               <div className="flex flex-col justify-between items-start gap-6 w-full">
                 <h2 className="text-fordham-white text-2xl font-medium">Looking For</h2>
 
-                <div className="flex flex-row flex-wrap gap-6">
+                <div className="flex flex-row flex-wrap justify-center items-center md:justify-start md:items-start gap-4 md:gap-6 w-full md:w-fit">
                   {user.interestedPositions?.map((position) => (
-                    <Button variant="tertiary" text={position} pressable={false} />
+                    <Button
+                      variant="tertiary"
+                      text={position}
+                      pressable={false}
+                      className="w-full md:w-fit"
+                    />
                   ))}
                 </div>
               </div>
             </div>
 
-            <div>
+            <div className="hidden md:block">
               <Button icon={<IconLogout />} onClick={logout} text="Log out" variant="primary" />
             </div>
           </div>
@@ -140,12 +149,12 @@ export default function Profile() {
                     </div>
                   </div>
                 </div>
-                <div className="flex w-full justify-center items-center py-6">
+                <div className="flex flex-col w-full justify-center items-center py-6 gap-6">
                   <UsageDonut current={usage?.remainingUses} total={20} />
+                  <p className="text-fordham-white/80 text-sm">
+                    Renews on {new Date(usage?.resetDate).toLocaleDateString()}
+                  </p>
                 </div>
-                <p className="text-fordham-white/80 text-sm">
-                  Renews on {new Date(usage?.resetDate).toLocaleDateString()}
-                </p>
               </div>
             </div>
             <div className="flex flex-row items-center gap-6 bg-fordham-brown p-6 rounded-[16px] backdrop-blur-sm w-full">

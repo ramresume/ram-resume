@@ -157,9 +157,49 @@ export default function Toolbox() {
     }
   }, [user, authLoading, router]);
 
+  // Add new state for mobile detection
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Add useEffect for mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768); // Standard tablet/mobile breakpoint
+    };
+
+    // Check on mount
+    checkMobile();
+
+    // Check on resize
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   // If loading or not authenticated, don't render the page content
   if (authLoading || !user) {
     return null;
+  }
+
+  // Add mobile guard
+  if (isMobile) {
+    return (
+      <>
+        <GradientContainer />
+        <PageContainer
+          marginBottom={true}
+          marginTop={true}
+          limitedWidth={true}
+          className="max-w-7xl flex flex-col items-center justify-center min-h-[50vh]"
+        >
+          <div className="text-center z-10">
+            <h1 className="h2 text-fordham-white mb-4">Desktop Required</h1>
+            <p className="body-txt-md text-fordham-light-gray/60">
+              Please use a larger screen device to access the Toolbox. The toolbox is not optimized
+              for small devices.
+            </p>
+          </div>
+        </PageContainer>
+      </>
+    );
   }
 
   return (

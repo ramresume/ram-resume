@@ -30,9 +30,9 @@ export default function Blog({ BlogPageData, blogPageContent }) {
       <GradientContainer>
         <div className="flex flex-col">
           {/* Hero Section */}
-          <div className="w-full flex flex-col items-center gap-6 py-24 px-6 md:px-10">
+          <div className="w-full flex flex-col items-center gap-6 py-20 md:px-10">
             <div className="max-w-3xl text-center">
-              <h1 className="h4 md:h2 text-fordham-white mb-4">
+              <h1 className="h4 md:h2 text-fordham-white mb-2">
                 {blogPageContent?.title || "RamResume Blog"}
               </h1>
               <p className="body-txt-md md:body-txt-lg text-center font-light text-fordham-light-gray/60 max-w-2xl mx-auto">
@@ -75,7 +75,7 @@ export default function Blog({ BlogPageData, blogPageContent }) {
           </div>
 
           {/* Results Section */}
-          <div className="w-full px-4 md:px-0">
+          <div className="w-full">
             {/* Results Count */}
             {/* <div className="mb-8 text-fordham-light-gray/60">
               {activeCategory !== "All" && (
@@ -86,8 +86,8 @@ export default function Blog({ BlogPageData, blogPageContent }) {
 
             {/* Featured Post */}
             {filteredPosts.length > 0 && !searchTerm && activeCategory === "All" && (
-              <div className="mb-16">
-                <h2 className="h4 text-fordham-white mb-6">Featured Post</h2>
+              <div className="mb-10">
+                <h2 className="text-2xl font-bold text-fordham-white mb-6">Featured Post</h2>
                 <div className="featured-post">
                   {/* You'll need to create a FeaturedBlogCard component */}
                   <FeaturedBlogCard {...filteredPosts[0]} />
@@ -111,8 +111,8 @@ export default function Blog({ BlogPageData, blogPageContent }) {
 // Create a new FeaturedBlogCard component
 const FeaturedBlogCard = (post) => {
   return (
-    <div className="group relative overflow-hidden rounded-[24px] bg-fordham-white/5 hover:bg-fordham-white/10 transition-colors">
-      <div className="flex flex-col md:flex-row gap-8 p-8">
+    <div className="group relative overflow-hidden rounded-[16px] bg-fordham-white/5 hover:bg-fordham-white/10 transition-colors">
+      <div className="flex flex-col md:flex-row gap-6 p-6">
         {post.mainImage && (
           <div className="md:w-1/2">
             <Image
@@ -120,12 +120,12 @@ const FeaturedBlogCard = (post) => {
               alt={post.title}
               width={600}
               height={400}
-              className="rounded-[16px] object-cover w-full h-[300px] group-hover:scale-105 transition-transform duration-300"
+              className="rounded-[16px] object-cover w-full h-[200px] group-hover:scale-105 transition-transform duration-300"
             />
           </div>
         )}
         <div className="md:w-1/2 flex flex-col justify-center">
-          <h3 className="h4 text-fordham-white mb-4 transition-colors">{post.title}</h3>
+          <h3 className="text-2xl font-bold text-fordham-white mb-4 transition-colors">{post.title}</h3>
           <p className="text-fordham-light-gray/60 mb-6 line-clamp-3">{post.body}</p>
           <div className="flex items-center gap-4">
             {post.author?.image && (

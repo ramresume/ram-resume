@@ -78,7 +78,7 @@ export default function About({ aboutData }) {
     <>
       <PageContainer marginBottom={true} className="relative">
         <GradientContainer>
-          <div className="w-full flex flex-col items-center gap-2 py-20 px-10">
+          <div className="w-full flex flex-col items-center gap-2 py-20 md:px-10">
             <h1 className="h4 md:h3 text-fordham-white">{title || "About us"}</h1>
             <p className="body-txt-md px-0 md:px-20 text-center font-light text-fordham-light-gray/60">
               {description ||
@@ -87,7 +87,7 @@ export default function About({ aboutData }) {
           </div>
 
           <div className="relative">
-            <div className="team-members-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mr-10 md:mr-0">
+            <div className="team-members-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:mr-0">
               {formattedTeamMembers.map((member, index) => {
                 const isFirstWithLetter =
                   index === 0 ||
@@ -183,13 +183,15 @@ export default function About({ aboutData }) {
             </div>
           </div>
         </GradientContainer>
-        {mounted && (
-          <ScrollingLetterIndex
-            letterIndex={letterIndex}
-            activeLetter={activeLetter}
-            setActiveLetter={setActiveLetter}
-          />
-        )}
+        <div className="hidden md:block">
+          {mounted && (
+            <ScrollingLetterIndex
+              letterIndex={letterIndex}
+              activeLetter={activeLetter}
+              setActiveLetter={setActiveLetter}
+            />
+          )}
+        </div>
       </PageContainer>
     </>
   );
