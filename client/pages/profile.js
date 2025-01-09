@@ -4,20 +4,28 @@ import Image from "next/image";
 import Button from "@/components/ui/Button";
 import { useRouter } from "next/router";
 import {
+  IconFile,
   IconInfoCircle,
   IconLoader2,
   IconLogout,
   IconPencil,
   IconTrophy,
+  IconUpload,
 } from "@tabler/icons-react";
 import PageContainer from "@/components/PageContainer";
 import GradientContainer from "@/components/ui/GradientContainer";
 import ProfileEditForm from "@/components/Profile/ProfileEditForm";
+import { useApi } from "@/hooks/useApi";
+import ResumeModal from "@/components/Profile/ResumeModal";
 
 export default function Profile() {
   const { user, loading, logout, usage, checkUsage } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const [resume, setResume] = useState(null);
   const router = useRouter();
+  const api = useApi();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -34,8 +42,15 @@ export default function Profile() {
     };
   }, [user, loading, router, isEditing]);
 
+  async function getResume() {
+    const resume = await api.request("/api/files");
+    setResume(resume);
+    console.log(resume);
+  }
+
   useEffect(() => {
     checkUsage();
+    getResume();
   }, [checkUsage]);
 
   if (loading || !user) {
@@ -48,6 +63,14 @@ export default function Profile() {
 
   function handleEdit() {
     setIsEditing(true);
+  }
+
+  function handleUpload() {
+    setIsUploading(true);
+  }
+
+  function handleResumeOpen() {
+    setIsResumeOpen(true);
   }
 
   return (
@@ -108,6 +131,13 @@ export default function Profile() {
                   <IconPencil className="w-6 h-6 hover:cursor-pointer hover:text-fordham-white text-fordham-light-gray" />
                 </button>
 
+                <button
+                  className="bg-fordham-white/5 rounded-[8px] p-4 hover:bg-fordham-white/10 hover:cursor-pointer"
+                  onClick={handleResumeOpen}
+                >
+                  <IconFile className="w-6 h-6 hover:cursor-pointer hover:text-fordham-white text-fordham-light-gray" />
+                </button>
+
                 <button className="md:hidden bg-fordham-white rounded-[8px] p-4" onClick={logout}>
                   <IconLogout className="w-6 h-6 text-fordham-black" />
                 </button>
@@ -118,7 +148,7 @@ export default function Profile() {
               <div className="flex flex-col justify-between items-start gap-6 w-full">
                 <h2 className="text-fordham-white text-2xl font-medium">Looking For</h2>
 
-                <div className="flex flex-row flex-wrap justify-center items-center md:justify-start md:items-start gap-4 md:gap-6 w-full md:w-fit">
+                <div className="flex flex-row flex-wrap justify-center items-center md:justify-start md:items-start gap-4 w-full md:w-fit">
                   {user.interestedPositions?.map((position) => (
                     <Button
                       variant="tertiary"
@@ -179,35 +209,35 @@ export default function Profile() {
       </PageContainer>
       {isEditing && (
         <>
-          <div className="fixed h-screen -inset-[100px] bg-fordham-black/80 backdrop-blur-sm z-[60]">
+          <div className="fixed inset-0 bg-fordham-black/50 backdrop-blur-sm flex items-center justify-center z-50">
             <EditProfile user={user} onClose={() => setIsEditing(false)} />
           </div>
         </>
       )}
+
+      {isResumeOpen && <ResumeModal setIsResumeOpen={setIsResumeOpen} />}
     </GradientContainer>
   );
 }
 
 function EditProfile({ user, onClose }) {
   return (
-    <div className="fixed inset-0 bg-fordham-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-fordham-white/10 rounded-[16px] p-8 w-full max-w-2xl relative">
-        <button
-          onClick={onClose}
-          className="absolute top-6 right-6 text-fordham-white/80 hover:text-fordham-white"
-        >
-          ✕
-        </button>
+    <div className="bg-fordham-brown  rounded-[16px] p-8 w-full max-w-2xl relative">
+      <button
+        onClick={onClose}
+        className="absolute top-6 right-6 text-fordham-white/80 hover:text-fordham-white"
+      >
+        ✕
+      </button>
 
-        <h2 className="text-fordham-white text-2xl font-medium mb-6">Edit Profile</h2>
+      <h2 className="text-fordham-white text-2xl font-medium mb-6">Edit Profile</h2>
 
-        <ProfileEditForm
-          initialData={user}
-          mode="edit"
-          onSubmitSuccess={onClose}
-          onCancel={onClose}
-        />
-      </div>
+      <ProfileEditForm
+        initialData={user}
+        mode="edit"
+        onSubmitSuccess={onClose}
+        onCancel={onClose}
+      />
     </div>
   );
 }

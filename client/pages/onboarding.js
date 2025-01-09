@@ -5,12 +5,19 @@ import PageContainer from "@/components/PageContainer";
 import GradientContainer from "@/components/ui/GradientContainer";
 import { IconChevronDown } from "@tabler/icons-react";
 import ProfileEditForm from "@/components/Profile/ProfileEditForm";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Onboarding() {
   const router = useRouter();
+  const { logout } = useAuth();
 
   const handleSuccess = () => {
     router.push("/profile");
+  };
+
+  const handleLogout = () => {
+    logout();
+    router.push("/");
   };
 
   return (
@@ -23,11 +30,12 @@ export default function Onboarding() {
               Help us personalize your experience and match you with the right opportunities
             </p>
           </div>
-
+        </div>
+        <div className="shadow-lg w-full max-w-2xl mx-auto flex flex-col items-center gap-2 bg-fordham-white/10 rounded-[16px] p-6">
           <ProfileEditForm
             mode="onboarding"
             onSubmitSuccess={handleSuccess}
-            containerClassName="w-full max-w-2xl mt-8"
+            onLogout={handleLogout}
           />
         </div>
       </GradientContainer>

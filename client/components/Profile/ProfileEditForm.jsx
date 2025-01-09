@@ -33,11 +33,11 @@ const CustomSelect = ({ options, value, onChange, placeholder, name }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative">
+    <div className="relative gap-2">
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex-1 bg-fordham-brown text-fordham-white rounded-[8px] 
+        className="w-full flex-1 bg-fordham-white/10 text-fordham-white rounded-[8px] 
           px-5 py-3 flex justify-between items-center focus:outline-none"
       >
         <span className={!value ? "text-fordham-gray/60" : ""}>{value || placeholder}</span>
@@ -47,7 +47,7 @@ const CustomSelect = ({ options, value, onChange, placeholder, name }) => {
       </button>
 
       {isOpen && (
-        <div className="absolute w-full mt-2 bg-fordham-brown rounded-[8px] shadow-lg z-50 overflow-hidden">
+        <div className="absolute w-full mt-2 bg-fordham-black rounded-[8px] shadow-lg z-50 overflow-hidden">
           {options.map((option) => (
             <button
               key={option}
@@ -76,6 +76,7 @@ export default function UserProfileForm({
   initialData = {},
   onSubmitSuccess,
   onCancel,
+  onLogout,
   mode = "edit",
 }) {
   const api = useApi();
@@ -145,7 +146,7 @@ export default function UserProfileForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-2xl mt-8">
+    <form onSubmit={handleSubmit} className="w-full max-w-2xl">
       {error && (
         <div className="bg-red-900/20 border border-red-500 text-red-500 px-4 py-3 rounded-[16px] mb-8">
           {error}
@@ -170,7 +171,7 @@ export default function UserProfileForm({
               value={formData.firstName}
               onChange={handleInputChange}
               placeholder="Enter first name"
-              className="w-full flex-1 bg-fordham-brown text-fordham-white rounded-[8px] 
+              className="w-full flex-1 bg-fordham-white/10 text-fordham-white rounded-[8px] 
                 placeholder:text-fordham-gray/60 focus:outline-none px-5 py-3 
                 border-transparent focus:ring-0"
             />
@@ -187,7 +188,7 @@ export default function UserProfileForm({
               value={formData.lastName}
               onChange={handleInputChange}
               placeholder="Enter last name"
-              className="w-full flex-1 bg-fordham-brown text-fordham-white rounded-[8px] 
+              className="w-full flex-1 bg-fordham-white/10 text-fordham-white rounded-[8px] 
                 placeholder:text-fordham-gray/60 focus:outline-none px-5 py-3 
                 border-transparent focus:ring-0"
             />
@@ -195,7 +196,7 @@ export default function UserProfileForm({
         </div>
 
         {/* Graduation Year */}
-        <div className="w-full flex flex-row gap-6">
+        <div className="w-full flex flex-col md:flex-row gap-6">
           <div className="w-full">
             <label
               htmlFor="gradYear"
@@ -246,7 +247,7 @@ export default function UserProfileForm({
                   ${
                     formData.interestedPositions.includes(position)
                       ? "bg-fordham-white/10 text-fordham-white hover:text-fordham-light-gray"
-                      : "bg-fordham-brown text-fordham-gray/60 hover:text-fordham-white hover:bg-fordham-white/5"
+                      : "bg-fordham-black/50 text-fordham-gray/60 hover:text-fordham-white hover:bg-fordham-white/5"
                   }`}
               >
                 {position}
@@ -266,9 +267,18 @@ export default function UserProfileForm({
             className="flex-1"
           />
         )}
+        {onLogout && (
+          <Button
+            type="button"
+            onClick={onLogout}
+            text="Logout"
+            variant="secondary"
+            className="flex-1"
+          />
+        )}
         <Button
           type="submit"
-          text={loading ? "Saving..." : mode === "onboarding" ? "Complete Profile" : "Save Changes"}
+          text={loading ? "Saving..." : mode === "onboarding" ? "Submit" : "Save"}
           variant="primary"
           disabled={loading}
           className="flex-1"

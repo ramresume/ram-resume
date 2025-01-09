@@ -54,7 +54,6 @@ app.use(cookieParser());
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.json());
 require("./config/passport")(passport);
 
 // Routes
@@ -64,7 +63,7 @@ app.use("/api", require("./routes/test"));
 app.use("/api", require("./routes/extract-keywords"));
 app.use("/api", require("./routes/resume"));
 app.use("/api", require("./routes/cover-letter"));
-
+app.use("/api", require("./routes/file"));
 // Test route
 app.get("/", (req, res) => {
   res.send("AI Career Toolbox server is running!");

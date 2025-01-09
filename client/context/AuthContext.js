@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [request, router, isNewLogin]);
+  }, [request, router, isNewLogin, user]);
 
   const acceptTerms = useCallback(async () => {
     try {
