@@ -10,11 +10,13 @@ import ToolboxEnd from "@/components/ToolboxPage/ToolboxSteps/ToolboxEnd";
 import { useToolboxSteps } from "@/components/ToolboxPage/ToolboxSteps/useToolboxSteps";
 import ExitConfirmationModal from "@/components/ToolboxPage/ExitConfirmationModal";
 import GradientContainer from "@/components/ui/GradientContainer";
+import ScanHistory from "@/components/Profile/ScanHistory";
 
 export default function Toolbox() {
   const { request, loading } = useApi();
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
+  const [isScanHistoryOpen, setIsScanHistoryOpen] = useState(false);
   const [state, setState] = useState({
     toolboxActive: true,
     activeStep: 1,
@@ -250,6 +252,9 @@ export default function Toolbox() {
         ) : (
           <ToolboxEnd />
         )}
+
+        {/* Scan history */}
+        <ScanHistory setOpen={setIsScanHistoryOpen} />
       </PageContainer>
     </>
   );
