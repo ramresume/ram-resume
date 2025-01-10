@@ -3,6 +3,7 @@ import GradientContainer from "@/components/ui/GradientContainer";
 import { client } from "@/src/sanity/lib/client";
 import { IconBrandGithubFilled, IconBrandLinkedinFilled, IconWorld } from "@tabler/icons-react";
 import { useState, useEffect } from "react";
+import Head from "next/head";
 
 // Query to fetch about page data
 export const aboutPageQuery = `
@@ -76,6 +77,19 @@ export default function About({ aboutData }) {
 
   return (
     <>
+      <Head>
+        <title>About Us | RAMResume</title>
+        <meta
+          name="description"
+          content="Meet the team behind RAMResume, a collaboration between Fordham University's Gabelli School of Business and talented developers."
+        />
+        <meta property="og:title" content="About Us | RAMResume" />
+        <meta
+          property="og:description"
+          content="Meet the team behind RAMResume, a collaboration between Fordham University's Gabelli School of Business and talented developers."
+        />
+        <meta property="og:type" content="website" />
+      </Head>
       <PageContainer marginBottom={true} className="relative">
         <GradientContainer>
           <div className="w-full flex flex-col items-center gap-2 py-20 md:px-10">

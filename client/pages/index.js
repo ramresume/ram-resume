@@ -7,27 +7,43 @@ import DemoSection from "@/components/LandingPage/DemoSection/DemoSection";
 import BlogSection from "@/components/LandingPage/BlogSection/BlogSection";
 import TestimonialsSection from "@/components/LandingPage/TestimonialsSection/TestimonialsSection";
 import GradientContainer from "@/components/ui/GradientContainer";
+import Head from "next/head";
 
 export default function Home({ HomePageData }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-[160px]">
-      <GradientContainer>
-        <PageContainer limitedWidth={true}>
-          <div className="flex flex-col items-center justify-center gap-20 mt-20 md:gap-[160px]">
-            <Hero {...HomePageData.hero} />
-            <FeaturesSection {...HomePageData.features} />
+    <>
+      <Head>
+        <title>Home | RAMResume</title>
+        <meta
+          name="description"
+          content="Create professional resumes with RAMResume, the official resume builder for Fordham University students. Get templates, tips, and expert guidance."
+        />
+        <meta property="og:title" content="Home | RAMResume" />
+        <meta
+          property="og:description"
+          content="Create professional resumes with RAMResume, the official resume builder for Fordham University students."
+        />
+        <meta property="og:type" content="website" />
+      </Head>
+      <div className="flex flex-col items-center justify-center gap-[160px]">
+        <GradientContainer>
+          <PageContainer limitedWidth={true}>
+            <div className="flex flex-col items-center justify-center gap-20 mt-20 md:gap-[160px]">
+              <Hero {...HomePageData.hero} />
+              <FeaturesSection {...HomePageData.features} />
+            </div>
+          </PageContainer>
+        </GradientContainer>
+
+        <PageContainer limitedWidth={true} marginBottom={true}>
+          <div className="flex flex-col items-center justify-center gap-20 md:gap-[160px]">
+            <DemoSection {...HomePageData.demo} demoOverview={HomePageData.demoOverview} />
+            <BlogSection blogs={HomePageData.blogs} />
+            <TestimonialsSection testimonials={HomePageData.testimonials} />
           </div>
         </PageContainer>
-      </GradientContainer>
-
-      <PageContainer limitedWidth={true} marginBottom={true}>
-        <div className="flex flex-col items-center justify-center gap-20 md:gap-[160px]">
-          <DemoSection {...HomePageData.demo} demoOverview={HomePageData.demoOverview} />
-          <BlogSection blogs={HomePageData.blogs} />
-          <TestimonialsSection testimonials={HomePageData.testimonials} />
-        </div>
-      </PageContainer>
-    </div>
+      </div>
+    </>
   );
 }
 

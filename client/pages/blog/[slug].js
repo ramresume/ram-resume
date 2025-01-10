@@ -2,28 +2,40 @@ import { useRouter } from "next/router";
 import { client } from "@/src/sanity/lib/client";
 import BlogDetailPage from "@/components/BlogPage/BlogDetailPage";
 import { IconArrowLeft } from "@tabler/icons-react";
+import Head from "next/head";
 
 export default function BlogPost({ blog, relatedPosts }) {
   const router = useRouter();
+  const description = blog.body ? `${blog.body.substring(0, 155)}...` : "";
 
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="min-h-screen flex flex-col w-full py-20 md:py-28">
-      <div className="max-w-5xl mx-auto px-4 w-full">
-        <button
-          onClick={() => router.push("/blog")}
-          className="group flex items-center gap-2 text-fordham-light-gray/60 hover:text-fordham-white transition-colors mb-8"
-        >
-          <IconArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-          Back to blogs
-        </button>
+    <>
+      <Head>
+        <title>{`${blog.title} | RAMResume Blog`}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={`${blog.title} | RAMResume Blog`} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="article" />
+        {blog.mainImage && <meta property="og:image" content={urlFor(blog.mainImage).url()} />}
+      </Head>
+      <div className="min-h-screen flex flex-col w-full py-20 md:py-28">
+        <div className="max-w-5xl mx-auto px-4 w-full">
+          <button
+            onClick={() => router.push("/blog")}
+            className="group flex items-center gap-2 text-fordham-light-gray/60 hover:text-fordham-white transition-colors mb-8"
+          >
+            <IconArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+            Back to blogs
+          </button>
 
-        <BlogDetailPage blog={blog} relatedPosts={relatedPosts} />
+          <BlogDetailPage blog={blog} relatedPosts={relatedPosts} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

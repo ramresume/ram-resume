@@ -11,6 +11,7 @@ import { useToolboxSteps } from "@/components/ToolboxPage/ToolboxSteps/useToolbo
 import ExitConfirmationModal from "@/components/ToolboxPage/ExitConfirmationModal";
 import GradientContainer from "@/components/ui/GradientContainer";
 import ScanHistory from "@/components/Profile/ScanHistory";
+import Head from "next/head";
 
 export default function Toolbox() {
   const { request, loading } = useApi();
@@ -209,6 +210,19 @@ export default function Toolbox() {
 
   return (
     <>
+      <Head>
+        <title>Toolbox | RAMResume</title>
+        <meta
+          name="description"
+          content="Follow the steps below to tailor your resume for the specific job application."
+        />
+        <meta property="og:title" content="Toolbox | RAMResume" />
+        <meta
+          property="og:description"
+          content="Follow the steps below to tailor your resume for the specific job application."
+        />
+        <meta property="og:type" content="website" />
+      </Head>
       <GradientContainer />
       <PageContainer
         marginBottom={true}
