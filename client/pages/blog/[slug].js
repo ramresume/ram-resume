@@ -3,11 +3,11 @@ import { client } from "@/src/sanity/lib/client";
 import BlogDetailPage from "@/components/BlogPage/BlogDetailPage";
 import { IconArrowLeft } from "@tabler/icons-react";
 import Head from "next/head";
+import { urlFor } from "@/src/sanity/lib/image";
 
 export default function BlogPost({ blog, relatedPosts }) {
   const router = useRouter();
-  const description = blog.body ? `${blog.body.substring(0, 155)}...` : "";
-
+  const description = blog?.title ? `${blog?.title} | RAMResume Blog` : "Loading blog post...";
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
@@ -15,12 +15,12 @@ export default function BlogPost({ blog, relatedPosts }) {
   return (
     <>
       <Head>
-        <title>{`${blog.title} | RAMResume Blog`}</title>
+        <title>{`${blog?.title} | RAMResume Blog`}</title>
         <meta name="description" content={description} />
-        <meta property="og:title" content={`${blog.title} | RAMResume Blog`} />
+        <meta property="og:title" content={`${blog?.title} | RAMResume Blog`} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="article" />
-        {blog.mainImage && <meta property="og:image" content={urlFor(blog.mainImage).url()} />}
+        {blog?.mainImage && <meta property="og:image" content={urlFor(blog?.mainImage).url()} />}
       </Head>
       <div className="min-h-screen flex flex-col w-full py-20 md:py-28">
         <div className="max-w-5xl mx-auto px-4 w-full">

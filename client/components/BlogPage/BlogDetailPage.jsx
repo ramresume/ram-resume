@@ -16,6 +16,8 @@ const BlogDetailPage = ({ blog, relatedPosts }) => {
       {blog.mainImage && (
         <div className="mb-10">
           <Image
+            priority={true}
+            loading="eager"
             src={urlFor(blog.mainImage).url()}
             alt={blog.mainImage.alt || blog.title}
             width={1200}
@@ -28,6 +30,8 @@ const BlogDetailPage = ({ blog, relatedPosts }) => {
       <div className="flex items-center mb-10 bg-fordham-white/5 p-6 rounded-[16px]">
         {blog.author?.image && (
           <Image
+            priority={true}
+            loading="eager"
             src={urlFor(blog.author.image).url()}
             alt={blog.author.name}
             width={64}

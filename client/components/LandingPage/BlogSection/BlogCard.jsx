@@ -19,9 +19,11 @@ const BlogCard = ({ title, body, slug, mainImage }) => (
   <div className="md:min-w-full min-w-[360px] flex flex-col h-full gap-4">
     <div className="w-full h-[200px] sm:h-[300px] md:h-[200px] relative">
       <Image
+        loading="lazy"
         src={urlFor(mainImage).url()}
         alt={mainImage.alt || title}
         fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className="object-cover rounded-[16px]"
       />
     </div>

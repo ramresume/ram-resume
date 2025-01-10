@@ -133,6 +133,7 @@ const FeaturedBlogCard = (post) => {
         {post.mainImage && (
           <div className="md:w-1/2">
             <Image
+              priority={true}
               src={urlFor(post.mainImage).url()}
               alt={post.title}
               width={600}
@@ -150,6 +151,7 @@ const FeaturedBlogCard = (post) => {
           <div className="flex items-center gap-4">
             {post.author?.image && (
               <Image
+                priority={true}
                 src={urlFor(post.author.image).url()}
                 alt={post.author.name}
                 width={100}
