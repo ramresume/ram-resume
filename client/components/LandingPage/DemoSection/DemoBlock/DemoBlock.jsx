@@ -48,6 +48,7 @@ const DemoBlock = ({ title, description, highlights, demoImage, imageLeft }) => 
         className="w-full rounded-[16px]"
       >
         <Image
+          unoptimized
           src={urlFor(demoImage).url()}
           alt="Demo Screenshot"
           width={600}

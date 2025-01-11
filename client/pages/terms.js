@@ -6,6 +6,7 @@ import PageContainer from "@/components/PageContainer";
 import GradientContainer from "@/components/ui/GradientContainer";
 import toast from "react-hot-toast";
 import Button from "@/components/ui/Button";
+import Head from "next/head";
 
 export default function Terms() {
   const [accepted, setAccepted] = useState(false);

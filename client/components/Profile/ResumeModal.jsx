@@ -120,7 +120,7 @@ export default function ResumeModal({ active, setActive }) {
 
             <div className="flex-1 rounded-[16px] h-fit overflow-hidden gap-6 flex flex-col">
               {pdfUrl ? (
-                 <iframe src={pdfUrl} className="w-full h-[50vh]" title="Resume Preview" />
+                <iframe src={pdfUrl} className="w-full h-[50vh]" title="Resume Preview" />
               ) : (
                 <div className="flex items-center justify-center h-fit py-20 text-fordham-white/60">
                   No resume uploaded

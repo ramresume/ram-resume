@@ -165,6 +165,7 @@ export default function Profile() {
                   <div className="flex flex-row flex-wrap justify-center items-center md:justify-start md:items-start gap-4 w-full md:w-fit">
                     {user.interestedPositions?.map((position) => (
                       <Button
+                        key={position}
                         variant="tertiary"
                         text={position}
                         pressable={false}

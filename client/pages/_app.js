@@ -59,27 +59,26 @@ export default function App({ Component, pageProps }) {
     <PostHogProvider client={posthog}>
       <AuthProvider>
         <RouteGuard>
+          <main>
+            <Layout footerData={footerData}>
+              <Component {...pageProps} />
+            </Layout>
+          </main>
 
-        <main>
-          <Layout footerData={footerData}>
-            <Component {...pageProps} />
-          </Layout>
-        </main>
-
-        <Toaster
-          position="bottom-right"
-          toastOptions={{
-            className: "",
-            duration: 3000,
-            style: {
-              background: "#FFFFFF",
-              opacity: 0.8,
-              color: "#282220",
-              borderRadius: "16px",
-              boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.05)",
-            },
-          }}
-        />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              className: "",
+              duration: 3000,
+              style: {
+                background: "#FFFFFF",
+                opacity: 0.8,
+                color: "#282220",
+                borderRadius: "16px",
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.05)",
+              },
+            }}
+          />
         </RouteGuard>
       </AuthProvider>
     </PostHogProvider>

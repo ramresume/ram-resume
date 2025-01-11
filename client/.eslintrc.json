@@ -1,11 +1,6 @@
 {
-  "extends": [
-    "next",
-    "next/babel",
-    "next/core-web-vitals",
-    "plugin:prettier/recommended",
-    "next/core-web-vitals"
-  ],
+  "parser": "@babel/eslint-parser",
+  "extends": ["next", "next/core-web-vitals", "plugin:prettier/recommended"],
   "plugins": ["prettier"],
   "rules": {
     "quotes": ["warn", "double"],

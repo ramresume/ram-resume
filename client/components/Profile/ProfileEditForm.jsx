@@ -57,9 +57,10 @@ const CustomSelect = ({ options, value, onChange, placeholder, name }) => {
                 setIsOpen(false);
               }}
               className={`w-full px-5 py-3 text-left hover:bg-fordham-white/5
-                ${value === option
-                  ? "bg-fordham-white/10 text-fordham-white"
-                  : "text-fordham-gray/60 hover:text-fordham-white"
+                ${
+                  value === option
+                    ? "bg-fordham-white/10 text-fordham-white"
+                    : "text-fordham-gray/60 hover:text-fordham-white"
                 }`}
             >
               {option}
@@ -129,12 +130,12 @@ export default function UserProfileForm({
         method: "PUT",
         body: JSON.stringify(formData),
       });
-      
+
       setLoading(false);
       toast.success(
         mode === "onboarding" ? "Profile setup completed!" : "Profile updated successfully"
       );
-      
+
       if (onSubmitSuccess) {
         setTimeout(() => {
           onSubmitSuccess();
@@ -159,7 +160,10 @@ export default function UserProfileForm({
         {/* Name Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="firstName" className="block text-md font-medium text-fordham-white mb-2">
+            <label
+              htmlFor="firstName"
+              className="block text-md font-medium text-fordham-white mb-2"
+            >
               First Name
             </label>
             <input
@@ -197,7 +201,10 @@ export default function UserProfileForm({
         {/* Graduation Year and Major */}
         <div className="w-full flex flex-col md:flex-row gap-6">
           <div className="w-full">
-            <label htmlFor="gradYear" className="block text-md font-medium text-fordham-white mb-2 w-full">
+            <label
+              htmlFor="gradYear"
+              className="block text-md font-medium text-fordham-white mb-2 w-full"
+            >
               Expected Graduation Year
             </label>
             <CustomSelect
@@ -210,7 +217,10 @@ export default function UserProfileForm({
           </div>
 
           <div className="w-full">
-            <label htmlFor="major" className="block text-md font-medium text-fordham-white mb-2 w-full">
+            <label
+              htmlFor="major"
+              className="block text-md font-medium text-fordham-white mb-2 w-full"
+            >
               Major
             </label>
             <CustomSelect
@@ -236,9 +246,10 @@ export default function UserProfileForm({
                 onClick={() => handlePositionToggle(position)}
                 className={`px-5 py-3 rounded-[8px] transition-[background,transform,outline] 
                   duration-50 ease-in-out flex items-center justify-center
-                  ${formData.interestedPositions.includes(position)
-                    ? "bg-fordham-white/10 text-fordham-white hover:text-fordham-light-gray"
-                    : "bg-fordham-black/50 text-fordham-gray/60 hover:text-fordham-white hover:bg-fordham-white/5"
+                  ${
+                    formData.interestedPositions.includes(position)
+                      ? "bg-fordham-white/10 text-fordham-white hover:text-fordham-light-gray"
+                      : "bg-fordham-black/50 text-fordham-gray/60 hover:text-fordham-white hover:bg-fordham-white/5"
                   }`}
               >
                 {position}
