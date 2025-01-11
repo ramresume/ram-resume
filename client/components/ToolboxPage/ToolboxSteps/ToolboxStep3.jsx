@@ -42,7 +42,7 @@ as they typically don't highlight specific skills. Only resumes in English, plea
       }
     };
     fetchResume();
-  }, []);
+  }, [resume, uploadedResume]);
 
   const handleExtractText = async () => {
     if (uploadedResume) {
@@ -63,10 +63,12 @@ as they typically don't highlight specific skills. Only resumes in English, plea
   return (
     <div className="flex flex-col gap-4 h-full">
       {uploadedResume && (
-        <div className="bg-fordham-black/30 p-6 rounded-[8px] flex justify-between items-center">
+        <div className="bg-fordham-black/30 p-4 rounded-[8px] flex justify-between items-center">
           <div className="flex gap-2 items-center">
             <IconFile className="w-6 h-6 text-fordham-gray/60" />
-            <p className="text-fordham-white">Found uploaded resume: {resumeInfo.filename}</p>
+            <p className="text-fordham-white">
+              Uploaded resume: <span className="italic">{resumeInfo.filename}</span>
+            </p>
           </div>
           <div className="flex gap-2 items-center">
             <Button
@@ -91,7 +93,7 @@ as they typically don't highlight specific skills. Only resumes in English, plea
         value={resume}
         onChange={(e) => setResume(e.target.value)}
         placeholder={placeholder}
-        className="w-full flex-1 bg-fordham-brown text-fordham-white rounded-[8px] p-4 placeholder:text-fordham-gray/60 focus:outline-none resize-none"
+        className="w-full flex-1 bg-fordham-brown text-fordham-white rounded-[8px] placeholder:text-fordham-gray/60 focus:outline-none resize-none"
       />
     </div>
   );

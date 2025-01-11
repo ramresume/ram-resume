@@ -108,9 +108,9 @@ const ScanButton = ({ scan, onClick }) => {
       <div className="flex items-center gap-4">
         <IconFileText className="w-6 h-6 md:w-8 md:h-8 text-fordham-white mt-1" />
         <div className="flex-1 min-w-0 flex flex-col gap-1 md:gap-2">
-          <h3 className="text-fordham-white font-medium text-base truncate">
+          <p className="text-fordham-white font-medium text-base truncate">
             {scan.company.toUpperCase()}
-          </h3>
+          </p>
           <p className="text-fordham-gray text-xs md:text-sm truncate">{scan.jobTitle}</p>
           <span className="text-fordham-light-gray text-xs md:text-sm">
             {formatDate(scan.createdAt)}

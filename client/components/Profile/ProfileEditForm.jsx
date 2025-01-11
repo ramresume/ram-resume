@@ -56,10 +56,10 @@ const CustomSelect = ({ options, value, onChange, placeholder, name }) => {
                 onChange({ target: { name, value: option } });
                 setIsOpen(false);
               }}
-              className={`w-full px-5 py-3 text-left hover:bg-fordham-white/5
+              className={`w-full px-5 py-3 text-left hover:bg-fordham-white/5 transition-colors
                 ${
                   value === option
-                    ? "bg-fordham-white/10 text-fordham-white"
+                    ? "bg-fordham-white/20 text-fordham-white"
                     : "text-fordham-gray/60 hover:text-fordham-white"
                 }`}
             >

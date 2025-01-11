@@ -17,7 +17,7 @@ exports.getUserScanHistory = async (userId) => {
   try {
     const history = await ScanHistory.find({
       userId,
-      isComplete: true,
+      // isComplete: true,
     })
       .sort({ createdAt: -1 })
       .limit(10);
