@@ -6,12 +6,16 @@ import {
   IconTag,
 } from "@tabler/icons-react";
 
-export const SideBarToolGroup = ({ activeStep, groupNumber, groupTitle, groupSteps }) => {
+export const SideBarToolGroup = ({
+  activeStep,
+  activeGroup,
+  groupNumber,
+  groupTitle,
+  groupSteps,
+}) => {
   const groupStepElements = groupSteps.map((step, idx) => (
     <GroupStepItem key={idx} activeStep={activeStep} {...step} />
   ));
-
-  // console.log('hello')
 
   return (
     <div
@@ -20,7 +24,7 @@ export const SideBarToolGroup = ({ activeStep, groupNumber, groupTitle, groupSte
       } p-4 rounded-[8px] flex flex-col gap-4 transition-all duration-300`}
     >
       <div className="text-fordham-white w-full flex items-center gap-4">
-        {activeStep <= groupNumber && activeStep < groupSteps[groupSteps.length - 1].stepNumber + 1 ? (
+        {activeGroup === groupNumber ? (
           <IconChevronDown className="w-4 font-bold" />
         ) : (
           <IconChevronRight className="w-4 font-bold" />

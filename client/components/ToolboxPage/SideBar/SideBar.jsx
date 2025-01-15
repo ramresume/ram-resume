@@ -33,8 +33,20 @@ const toolGroupData = [
 ];
 
 export const Sidebar = ({ activeStep, progress, handleReturnBtn }) => {
+  const calculateActiveGroup = () => {
+    if (activeStep >= 1 && activeStep < 3) {
+      return 1;
+    } else if (activeStep >= 3 && activeStep < 5) {
+      return 3;
+    } else if (activeStep >= 5 && activeStep < 6) {
+      return 5;
+    }
+    return null;
+  };
+  const activeGroup = calculateActiveGroup();
+
   const toolGroupElements = toolGroupData.map((group, idx) => (
-    <SideBarToolGroup activeStep={activeStep} {...group} />
+    <SideBarToolGroup activeStep={activeStep} activeGroup={activeGroup} {...group} />
   ));
 
   return (
