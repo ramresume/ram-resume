@@ -39,7 +39,7 @@ export const SideBarToolGroup = ({
         </div>
       </div>
       {/* Show steps only when in keyword extractor phase */}
-      {activeStep <= groupNumber && <div className="flex flex-col gap-4">{groupStepElements}</div>}
+      {activeGroup === groupNumber && <div className="flex flex-col gap-4">{groupStepElements}</div>}
     </div>
 
     // <>
