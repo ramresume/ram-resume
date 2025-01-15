@@ -32,8 +32,6 @@ export default function Toolbox() {
     pendingNavigation: null,
   });
 
-  // console.log('test')
-
   const {
     toolboxActive,
     activeStep,
