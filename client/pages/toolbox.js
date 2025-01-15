@@ -4,7 +4,7 @@ import { useApi } from "@/hooks/useApi";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "react-hot-toast";
 import PageContainer from "@/components/PageContainer";
-import { Sidebar } from "@/components/ToolboxPage/SideBar";
+import { Sidebar } from "@/components/ToolboxPage/SideBar/SideBar";
 import MainToolbox from "@/components/ToolboxPage/MainToolbox";
 import ToolboxEnd from "@/components/ToolboxPage/ToolboxSteps/ToolboxEnd";
 import { useToolboxSteps } from "@/components/ToolboxPage/ToolboxSteps/useToolboxSteps";
@@ -31,6 +31,8 @@ export default function Toolbox() {
     bulletPoints: [],
     pendingNavigation: null,
   });
+
+  // console.log('test')
 
   const {
     toolboxActive,
@@ -140,28 +142,28 @@ export default function Toolbox() {
     }
   };
 
-  useEffect(() => {
-    if (activeStep > 5) updateState({ toolboxActive: false });
-  }, [activeStep]);
+  // useEffect(() => {
+  //   if (activeStep > 5) updateState({ toolboxActive: false });
+  // }, [activeStep]);
 
-  const { renderStep } = useToolboxSteps({
-    state,
-    updateState,
-    navigateStep,
-  });
+  // const { renderStep } = useToolboxSteps({
+  //   state,
+  //   updateState,
+  //   navigateStep,
+  // });
 
   // Add authentication check with a ref to track if we've shown the toast
-  useEffect(() => {
-    let redirecting = false;
+  // useEffect(() => {
+  //   let redirecting = false;
 
-    if (!authLoading && !user && !redirecting) {
-      redirecting = true;
-      toast.error("Please log in to use the toolbox", {
-        id: "auth-error",
-      });
-      router.push("/");
-    }
-  }, [user, authLoading, router]);
+  //   if (!authLoading && !user && !redirecting) {
+  //     redirecting = true;
+  //     toast.error("Please log in to use the toolbox", {
+  //       id: "auth-error",
+  //     });
+  //     router.push("/");
+  //   }
+  // }, [user, authLoading, router]);
 
   // Add new state for mobile detection
   const [isMobile, setIsMobile] = useState(false);
@@ -245,7 +247,7 @@ export default function Toolbox() {
           />
         )}
 
-        {toolboxActive ? (
+        {/* {toolboxActive ? (
           <div className="h-[700px] w-full flex flex-row gap-6 z-10">
             <Sidebar
               activeStep={activeStep}
@@ -265,7 +267,7 @@ export default function Toolbox() {
           </div>
         ) : (
           <ToolboxEnd />
-        )}
+        )} */}
 
         {/* Scan history */}
         <ScanHistory setOpen={setIsScanHistoryOpen} />
