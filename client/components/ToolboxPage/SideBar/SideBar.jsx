@@ -27,7 +27,7 @@ const toolGroupData = [
   },
   {
     groupNumber: 5,
-    groupTitle: "Cover letter generator",
+    groupTitle: "Cover letter",
     groupSteps: [{ stepTitle: "Get cover letter", stepNumber: 5 }],
   },
 ];
