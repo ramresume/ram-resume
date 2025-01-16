@@ -21,6 +21,7 @@ export default function Toolbox() {
   const [state, setState] = useState({
     toolboxActive: true,
     activeStep: 1,
+    highestCompletedStep: 1,
     exitModalActive: false,
     jobDescription: "",
     keywords: [],
@@ -35,6 +36,7 @@ export default function Toolbox() {
   const {
     toolboxActive,
     activeStep,
+    highestCompletedStep,
     exitModalActive,
     jobDescription,
     keywords,
@@ -103,7 +105,7 @@ export default function Toolbox() {
 
   const navigateStep = (direction) => {
     if (direction === "next" && activeStep < 5) {
-      updateState({ activeStep: activeStep + 1 });
+      updateState({ activeStep: activeStep + 1, highestCompletedStep: highestCompletedStep + 1 });
     } else if (direction === "prev" && activeStep > 1) {
       updateState({ activeStep: activeStep - 1 });
     }
@@ -118,12 +120,14 @@ export default function Toolbox() {
           body: JSON.stringify({ jobDescription, company, jobTitle }),
         });
         updateState({ keywords: data.keywords, scanId: data.scanId });
+
       } else if (activeStep === 3) {
         const data = await request("/api/resume", {
           method: "POST",
           body: JSON.stringify({ jobDescription, resume, scanId }),
         });
         updateState({ bulletPoints: data, scanId: data.scanId });
+
       } else if (activeStep === 4) {
         const data = await request("/api/cover-letter", {
           method: "POST",
@@ -131,6 +135,7 @@ export default function Toolbox() {
         });
         updateState({ coverLetter: data.coverLetter });
       }
+
       navigateStep("next");
     } catch (error) {
       console.error("Request failed:", error);
@@ -140,28 +145,28 @@ export default function Toolbox() {
     }
   };
 
-  // useEffect(() => {
-  //   if (activeStep > 5) updateState({ toolboxActive: false });
-  // }, [activeStep]);
+  useEffect(() => {
+    if (activeStep > 5) updateState({ toolboxActive: false });
+  }, [activeStep]);
 
-  // const { renderStep } = useToolboxSteps({
-  //   state,
-  //   updateState,
-  //   navigateStep,
-  // });
+  const { renderStep } = useToolboxSteps({
+    state,
+    updateState,
+    navigateStep,
+  });
 
   // Add authentication check with a ref to track if we've shown the toast
-  // useEffect(() => {
-  //   let redirecting = false;
+  useEffect(() => {
+    let redirecting = false;
 
-  //   if (!authLoading && !user && !redirecting) {
-  //     redirecting = true;
-  //     toast.error("Please log in to use the toolbox", {
-  //       id: "auth-error",
-  //     });
-  //     router.push("/");
-  //   }
-  // }, [user, authLoading, router]);
+    if (!authLoading && !user && !redirecting) {
+      redirecting = true;
+      toast.error("Please log in to use the toolbox", {
+        id: "auth-error",
+      });
+      router.push("/");
+    }
+  }, [user, authLoading, router]);
 
   // Add new state for mobile detection
   const [isMobile, setIsMobile] = useState(false);
@@ -245,12 +250,13 @@ export default function Toolbox() {
           />
         )}
 
-        {/* {toolboxActive ? (
+        {toolboxActive ? (
           <div className="h-[700px] w-full flex flex-row gap-6 z-10">
             <Sidebar
               activeStep={activeStep}
+              highestCompletedStep={highestCompletedStep}
               handleReturnBtn={handleReturnBtn}
-              handleDone={handleDone}
+              updateState={updateState}
               setExitModalActive={(value) => updateState({ exitModalActive: value })}
             />
             <MainToolbox
@@ -265,7 +271,7 @@ export default function Toolbox() {
           </div>
         ) : (
           <ToolboxEnd />
-        )} */}
+        )}
 
         {/* Scan history */}
         <ScanHistory setOpen={setIsScanHistoryOpen} />

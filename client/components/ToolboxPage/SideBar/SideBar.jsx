@@ -32,7 +32,13 @@ const toolGroupData = [
   },
 ];
 
-export const Sidebar = ({ activeStep, progress, handleReturnBtn }) => {
+export const Sidebar = ({
+  activeStep,
+  highestCompletedStep,
+  progress,
+  updateState,
+  handleReturnBtn,
+}) => {
   const calculateActiveGroup = () => {
     if (activeStep >= 1 && activeStep < 3) {
       return 1;
@@ -46,7 +52,13 @@ export const Sidebar = ({ activeStep, progress, handleReturnBtn }) => {
   const activeGroup = calculateActiveGroup();
 
   const toolGroupElements = toolGroupData.map((group, idx) => (
-    <SideBarToolGroup activeStep={activeStep} activeGroup={activeGroup} {...group} />
+    <SideBarToolGroup
+      activeStep={activeStep}
+      activeGroup={activeGroup}
+      highestCompletedStep={highestCompletedStep}
+      updateState={updateState}
+      {...group}
+    />
   ));
 
   return (
@@ -70,11 +82,11 @@ export const Sidebar = ({ activeStep, progress, handleReturnBtn }) => {
           <div className="h-3 bg-fordham-dark-gray rounded-full w-full">
             <div
               className="h-full bg-gradient-to-r from-[#7E1515] via-[#BE2929] to-[#F34848] rounded-full transition-all duration-300"
-              style={{ width: `${(activeStep / 5) * 100}%` }}
+              style={{ width: `${(highestCompletedStep / 5) * 100}%` }}
             />
           </div>
           <p className="body-txt-sm text-fordham-gray -translate-y-1">
-            {Math.round((activeStep / 5) * 100)}%
+            {Math.round((highestCompletedStep / 5) * 100)}%
           </p>
         </div>
 
