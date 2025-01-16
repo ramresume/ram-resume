@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  IconChevronDown,
-  IconChevronLeft,
-  IconChevronRight,
-  IconFileText,
-  IconTag,
-} from "@tabler/icons-react";
+import { IconChevronDown, IconChevronRight, IconFileText, IconTag } from "@tabler/icons-react";
 
 export const SideBarToolGroup = ({
   activeStep,
@@ -67,7 +61,7 @@ export const SideBarToolGroup = ({
                 : "text-fordham-gray/60"
             }`}
         >
-          <IconTag className="w-4" />
+          {groupNumber > 2 ? <IconFileText className="w-4" /> : <IconTag className="w-4" />}
           <p className="hover:cursor-default">{groupTitle}</p>
         </div>
       </div>
