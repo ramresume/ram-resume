@@ -1,10 +1,3 @@
-import {
-  IconChevronDown,
-  IconChevronLeft,
-  IconChevronRight,
-  IconFileText,
-  IconTag,
-} from "@tabler/icons-react";
 import Button from "../../ui/Button";
 import { SideBarToolGroup } from "./SideBarToolGroup";
 
@@ -35,7 +28,6 @@ const toolGroupData = [
 export const Sidebar = ({
   activeStep,
   highestCompletedStep,
-  progress,
   updateState,
   handleReturnBtn,
 }) => {
