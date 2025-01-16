@@ -45,6 +45,7 @@ export const Sidebar = ({
 
   const toolGroupElements = toolGroupData.map((group, idx) => (
     <SideBarToolGroup
+      key={idx}
       activeStep={activeStep}
       activeGroup={activeGroup}
       highestCompletedStep={highestCompletedStep}
