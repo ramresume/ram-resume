@@ -17,10 +17,7 @@ export const SideBarToolGroup = ({
 
   // handleStepClick assesses wether to update the active step on click if it isn't already active
   const handleStepClick = (stepNumber) => {
-    console.log("stepNumber", stepNumber);
-    console.log("active step", highestCompletedStep);
     if (stepNumber !== activeStep && stepNumber <= highestCompletedStep) {
-      console.log("update state");
       updateState({ activeStep: stepNumber });
     }
     return;
