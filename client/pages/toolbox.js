@@ -13,6 +13,8 @@ import GradientContainer from "@/components/ui/GradientContainer";
 import ScanHistory from "@/components/Profile/ScanHistory";
 import Head from "next/head";
 
+import { mockKeywords, mockBulletPoints, mockCoverLetter } from "../../server/mockdata";
+
 export default function Toolbox() {
   const { request, loading } = useApi();
   const router = useRouter();
@@ -28,6 +30,7 @@ export default function Toolbox() {
     resume: "",
     company: "",
     jobTitle: "",
+    coverLetter: '',
     scanId: "",
     bulletPoints: [],
     pendingNavigation: null,
@@ -103,9 +106,34 @@ export default function Toolbox() {
     }
   };
 
+  // Function to handle when a user re-enters information into a form
+  const handleFormReset = () => {
+    if (activeStep === 1) {
+      updateState({
+        highestCompletedStep: activeStep + 1,
+        resume: "",
+        bulletPoints: "",
+        coverLetter: "",
+      });
+    }
+
+    if (activeStep === 3) {
+      updateState({
+        highestCompletedStep: activeStep + 1,
+        coverLetter: "",
+      });
+    }
+  };
+
   const navigateStep = (direction) => {
     if (direction === "next" && activeStep < 5) {
-      updateState({ activeStep: activeStep + 1, highestCompletedStep: highestCompletedStep + 1 });
+      // If the active step is greater than or equal to the highestCompletedStep,
+      // update the highestCompleted step to be activeStep plus one
+      if (activeStep >= highestCompletedStep) {
+        updateState({ highestCompletedStep: activeStep + 1 });
+      }
+      updateState({ activeStep: activeStep + 1 });
+
     } else if (direction === "prev" && activeStep > 1) {
       updateState({ activeStep: activeStep - 1 });
     }
@@ -115,25 +143,41 @@ export default function Toolbox() {
     e.preventDefault();
     try {
       if (activeStep === 1) {
-        const data = await request("/api/extract-keywords", {
-          method: "POST",
-          body: JSON.stringify({ jobDescription, company, jobTitle }),
-        });
-        updateState({ keywords: data.keywords, scanId: data.scanId });
+        if (highestCompletedStep > activeStep) {
+          handleFormReset();
+        }
 
+        // const data = await request("/api/extract-keywords", {
+        //   method: "POST",
+        //   body: JSON.stringify({ jobDescription, company, jobTitle }),
+        // });
+        // updateState({ keywords: data.keywords, scanId: data.scanId });
+
+        updateState({ keywords: mockKeywords });
       } else if (activeStep === 3) {
-        const data = await request("/api/resume", {
-          method: "POST",
-          body: JSON.stringify({ jobDescription, resume, scanId }),
-        });
-        updateState({ bulletPoints: data, scanId: data.scanId });
+        if (highestCompletedStep > activeStep) {
+          handleFormReset();
+        }
 
+        // const data = await request("/api/resume", {
+        //   method: "POST",
+        //   body: JSON.stringify({ jobDescription, resume, scanId }),
+        // });
+        // updateState({ bulletPoints: data, scanId: data.scanId });
+
+        updateState({ bulletPoints: mockBulletPoints });
       } else if (activeStep === 4) {
-        const data = await request("/api/cover-letter", {
-          method: "POST",
-          body: JSON.stringify({ jobDescription, resume, scanId }),
-        });
-        updateState({ coverLetter: data.coverLetter });
+        if (highestCompletedStep > activeStep) {
+          handleFormReset();
+        }
+
+        // const data = await request("/api/cover-letter", {
+        //   method: "POST",
+        //   body: JSON.stringify({ jobDescription, resume, scanId }),
+        // });
+        // updateState({ coverLetter: data.coverLetter });
+
+        updateState({ coverLetter: mockCoverLetter });
       }
 
       navigateStep("next");
