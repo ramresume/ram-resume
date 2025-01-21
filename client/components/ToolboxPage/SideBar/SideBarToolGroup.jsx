@@ -53,7 +53,7 @@ export const SideBarToolGroup = ({
         <div
           className={`flex gap-2 body-txt font-bold 
             ${
-              activeGroup === groupNumber || (highestCompletedStep >= groupNumber && isHovered)
+              activeGroup === groupNumber || highestCompletedStep >= groupNumber
                 ? "text-fordham-white"
                 : "text-fordham-gray/60"
             }`}
