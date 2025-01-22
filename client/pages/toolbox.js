@@ -131,7 +131,6 @@ export default function Toolbox() {
         });
         updateState({ keywords: data.keywords, scanId: data.scanId });
 
-        // updateState({ keywords: mockKeywords });
       } else if (activeStep === 3) {
         const data = await request("/api/resume", {
           method: "POST",
@@ -139,7 +138,6 @@ export default function Toolbox() {
         });
         updateState({ bulletPoints: data, scanId: data.scanId });
 
-        // updateState({ bulletPoints: mockBulletPoints });
       } else if (activeStep === 4) {
         const data = await request("/api/cover-letter", {
           method: "POST",
@@ -147,7 +145,6 @@ export default function Toolbox() {
         });
         updateState({ coverLetter: data.coverLetter });
 
-        // updateState({ coverLetter: mockCoverLetter });
       }
     } catch (error) {
       console.error("Request failed:", error);
@@ -165,7 +162,10 @@ export default function Toolbox() {
 
     const stepsRequiringConfirmationModal = [1, 3, 4];
 
-    if (stepsRequiringConfirmationModal.includes(activeStep) && highestCompletedStep > activeStep) {
+    if (
+      (stepsRequiringConfirmationModal.includes(activeStep) && highestCompletedStep > activeStep) ||
+      activeStep === 5
+    ) {
       updateState({ resetInitiated: true, confirmationModalActive: true });
       return;
     }
@@ -179,7 +179,7 @@ export default function Toolbox() {
   // reset and confirmation modal states.
   const handleFormReset = async () => {
     updateState({ resetInitiated: false, confirmationModalActive: false });
-    
+
     if (activeStep === 1) {
       updateState({
         highestCompletedStep: activeStep + 1,
@@ -193,6 +193,25 @@ export default function Toolbox() {
       updateState({
         highestCompletedStep: activeStep + 1,
         coverLetter: "",
+      });
+    }
+
+    if (activeStep === 5) {
+      updateState({
+        toolboxActive: true,
+        activeStep: 1,
+        highestCompletedStep: 1,
+        confirmationModalActive: false,
+        jobDescription: "",
+        keywords: [],
+        resume: "",
+        company: "",
+        jobTitle: "",
+        coverLetter: "",
+        scanId: "",
+        bulletPoints: [],
+        pendingNavigation: null,
+        resetInitiated: false,
       });
     }
 
@@ -325,6 +344,7 @@ export default function Toolbox() {
               renderStep={renderStep}
               handleDone={handleDone}
               handleSubmit={handleSubmit}
+              handleFormReset={handleFormReset}
               loading={loading}
             />
           </div>
