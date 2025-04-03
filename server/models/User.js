@@ -22,13 +22,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    // Uncomment to restrict authentication to Fordham emailss, another check in passport.js
-    // validate: {
-    //   validator: function (v) {
-    //     return v.endsWith("@fordham.edu");
-    //   },
-    //   message: "Only Fordham University email addresses are allowed",
-    // },
+    validate: {
+      validator: function (v) {
+        return v.endsWith("@fordham.edu");
+      },
+      message: "Only Fordham University email addresses are allowed",
+    },
   },
   profilePicture: {
     type: String,

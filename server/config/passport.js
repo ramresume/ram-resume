@@ -12,12 +12,12 @@ module.exports = function (passport) {
       async (accessToken, refreshToken, profile, done) => {
         try {
           const email = profile.emails[0].value;
-          // Uncomment to restrict authentication to Fordham emails, another check in User model
-          // if (!email.endsWith("@fordham.edu")) {
-          //   return done(null, false, {
-          //     message: "Only Fordham University personnel are allowed.",
-          //   });
-          // }
+          // Restrict authentication to Fordham emails only
+          if (!email.endsWith("@fordham.edu")) {
+            return done(null, false, {
+              message: "Only Fordham University personnel are allowed.",
+            });
+          }
 
           let user = await User.findOne({ googleId: profile.id });
 
