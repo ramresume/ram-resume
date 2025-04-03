@@ -11,7 +11,7 @@ const app = express();
 mongoose.set("strictQuery", true);
 
 // Database connection
-require("./config/db");
+require("../config/db");
 
 // CORS configuration for the client URL
 const corsOptions = {
@@ -54,24 +54,24 @@ app.use(cookieParser());
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-require("./config/passport")(passport);
+require("../config/passport")(passport);
 
 // Routes
-app.use("/auth", require("./routes/auth"));
-app.use("/api", require("./routes/user"));
-app.use("/api", require("./routes/test"));
-app.use("/api", require("./routes/extract-keywords"));
-app.use("/api", require("./routes/resume"));
-app.use("/api", require("./routes/cover-letter"));
-app.use("/api", require("./routes/file"));
-app.use("/api", require("./routes/scan-history"));
+app.use("/auth", require("../routes/auth"));
+app.use("/api", require("../routes/user"));
+app.use("/api", require("../routes/test"));
+app.use("/api", require("../routes/extract-keywords"));
+app.use("/api", require("../routes/resume"));
+app.use("/api", require("../routes/cover-letter"));
+app.use("/api", require("../routes/file"));
+app.use("/api", require("../routes/scan-history"));
 // Test route
 app.get("/", (req, res) => {
   res.send("AI Career Toolbox server is running!");
 });
 
 // Error handling middleware (move this to the end)
-app.use(require("./utils/errorHandler"));
+app.use(require("../utils/errorHandler"));
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port http://localhost:${PORT}`));
