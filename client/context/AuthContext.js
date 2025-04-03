@@ -92,7 +92,6 @@ export const AuthProvider = ({ children }) => {
           return await response.text();
         }
       } catch (error) {
-        console.error("API request error:", error);
         throw error;
       }
     },
@@ -101,16 +100,13 @@ export const AuthProvider = ({ children }) => {
   const loadUser = useCallback(async () => {
     // Prevent multiple simultaneous loading attempts
     if (isLoadingRef.current) {
-      console.log("Already loading user data, skipping duplicate request");
       return;
     }
-    
-    console.log("Attempting to load user data...");
+
     isLoadingRef.current = true;
-    
+
     try {
       const userData = await apiClient.request("/api/user");
-      console.log("User data loaded successfully:", userData);
       setUser(userData);
 
       // Check terms status after login
@@ -130,12 +126,10 @@ export const AuthProvider = ({ children }) => {
         }
       }
     } catch (error) {
-      console.error("Failed to fetch user", error);
       setUser(null);
 
       // Remove token if authentication failed
       if (error.response?.status === 401) {
-        console.log("Authentication failed (401), removing token");
         removeToken();
       }
 
@@ -163,7 +157,6 @@ export const AuthProvider = ({ children }) => {
   }, [router, loadUser]);
 
   const login = useCallback(() => {
-    console.log("Starting login process...");
     const width = 500;
     const height = 600;
     const left = (window.innerWidth - width) / 2;
@@ -202,8 +195,6 @@ export const AuthProvider = ({ children }) => {
 
       return true;
     } catch (error) {
-      console.error("Error checking usage:", error);
-
       // Handle authentication errors
       if (error.response?.status === 401) {
         setUsageError("Please log in to check your usage");
@@ -226,7 +217,6 @@ export const AuthProvider = ({ children }) => {
       router.push("/");
       toast.success("Successfully logged out");
     } catch (error) {
-      console.error("Logout failed", error);
       setError("Logout failed. Please try again.");
       toast.error("Logout failed. Please try again.");
     } finally {
@@ -236,13 +226,10 @@ export const AuthProvider = ({ children }) => {
 
   // Load user on initial render if token exists
   useEffect(() => {
-    console.log("Initial auth check...");
     // Attempt to load user if there's a token
     if (getToken()) {
-      console.log("Token found, loading user");
       loadUser();
     } else {
-      console.log("No token found, setting loading to false");
       setLoading(false);
     }
   }, [loadUser]);
@@ -250,31 +237,24 @@ export const AuthProvider = ({ children }) => {
   // Handle OAuth message events
   useEffect(() => {
     const handleMessage = (event) => {
-      console.log("Message received:", event.data);
-      
       if (event.data.type === "LOGIN_SUCCESS") {
-        console.log("Login success message received!");
-        
         // Store the JWT token
         if (event.data.token) {
           saveToken(event.data.token);
-          console.log("JWT token received and saved");
-          
+
           // Show an immediate toast for login
           toast.success("Login successful!");
-          
+
           setIsNewLogin(true);
           loadUser();
-          
+
           if (event.data.requiresTerms) {
             router.push("/terms");
           }
         } else {
-          console.error("No token received in login success message");
           toast.error("Authentication error: No token received");
         }
       } else if (event.data.type === "LOGIN_ERROR") {
-        console.error("Login error:", event.data.message);
         setError(event.data.message);
         toast.error(event.data.message || "Failed to login");
       }

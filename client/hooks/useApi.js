@@ -11,7 +11,7 @@ const getTokenFromStorage = () => {
 export const useApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   // Get auth context if available, but don't fail if not
   let authToken = null;
   try {
@@ -24,7 +24,6 @@ export const useApi = () => {
       }
     }
   } catch (e) {
-    console.log("Auth context not available, using fallback");
     authToken = getTokenFromStorage();
   }
 
@@ -35,12 +34,12 @@ export const useApi = () => {
 
       try {
         // Ensure endpoint starts with a slash but doesn't create a double slash
-        const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-        
+        const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+
         // Fix the URL to avoid double slashes
         const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL;
-        const url = `${baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl}${normalizedEndpoint}`;
-        
+        const url = `${baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl}${normalizedEndpoint}`;
+
         const headers = {
           "Content-Type": "application/json",
           ...(options.headers || {}),
@@ -62,32 +61,31 @@ export const useApi = () => {
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
           const data = await response.json();
-          
+
           if (!response.ok) {
-            throw { 
+            throw {
               response: {
                 status: response.status,
-                data
+                data,
               },
-              message: data.error || `Request failed with status ${response.status}`
+              message: data.error || `Request failed with status ${response.status}`,
             };
           }
-          
+
           return data;
         } else {
           if (!response.ok) {
-            throw { 
+            throw {
               response: {
-                status: response.status
+                status: response.status,
               },
-              message: `Request failed with status ${response.status}`
+              message: `Request failed with status ${response.status}`,
             };
           }
-          
+
           return await response.text();
         }
       } catch (error) {
-        console.error("API request error:", error);
         setError(error.response?.data?.error || error.message);
         throw error;
       } finally {

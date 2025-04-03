@@ -35,7 +35,6 @@ router.get(
 
 router.get("/login-failed", (req, res) => {
   const clientUrl = process.env.CLIENT_URL;
-
   res.send(`
     <html>
       <body>
@@ -62,8 +61,7 @@ router.post("/accept-terms", authenticate, async (req, res) => {
     await user.save();
     res.json({ success: true });
   } catch (error) {
-    console.error("Error accepting terms:", error);
-    res.status(500).json({ error: "Failed to accept terms" });
+    res.status(500).json({ error: `Failed to accept terms: ${error.message}` });
   }
 });
 

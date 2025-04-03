@@ -26,7 +26,6 @@ app.use(
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps, curl, etc)
       if (!origin) {
-        console.log("Allowing request with no origin");
         return callback(null, true);
       }
 
@@ -34,11 +33,9 @@ app.use(
       const cleanOrigin = origin.endsWith("/") ? origin.slice(0, -1) : origin;
 
       if (allowedOrigins.includes(cleanOrigin)) {
-        console.log(`Allowed origin: ${cleanOrigin}`);
         return callback(null, true);
       }
 
-      console.warn(`Blocked origin: ${cleanOrigin}`);
       return callback(new Error(`Origin ${cleanOrigin} not allowed by CORS`));
     },
     credentials: true,
