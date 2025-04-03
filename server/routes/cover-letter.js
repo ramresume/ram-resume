@@ -3,6 +3,7 @@ const router = express.Router();
 const { OpenAI } = require("openai");
 const { authenticate, requireTerms } = require("../middleware/auth.js");
 const { SYSTEM_PROMPT_COVER_LETTER } = require("../config/constants");
+const { updateScanHistory } = require("../controllers/ScanHistory.controller.js");
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -10,7 +11,7 @@ const openai = new OpenAI({
 
 router.post("/cover-letter", authenticate, requireTerms, async (req, res) => {
   try {
-    const { resume, jobDescription } = req.body;
+    const { resume, jobDescription, scanId } = req.body;
 
     if (!resume || !jobDescription) {
       return res.status(400).json({ error: "Both resume and job description are required" });
@@ -33,6 +34,15 @@ router.post("/cover-letter", authenticate, requireTerms, async (req, res) => {
     });
 
     const coverLetter = completion.choices[0].message.content.trim();
+
+    // Update scan history if scanId is provided
+    if (scanId) {
+      try {
+        await updateScanHistory(scanId, { coverLetter });
+      } catch (err) {
+        console.error("Error updating scan history with cover letter:", err);
+      }
+    }
 
     res.json({ coverLetter });
   } catch (error) {

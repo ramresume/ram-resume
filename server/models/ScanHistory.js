@@ -31,6 +31,10 @@ const ScanHistorySchema = new mongoose.Schema({
     type: String,
   },
   enhancedBullets: [BulletPointsSchema],
+  // Cover letter data
+  coverLetter: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

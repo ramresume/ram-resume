@@ -8,7 +8,7 @@ export default function ToolboxStep5({ coverLetter, setCoverLetter, error, setEr
           if (setError) setError("");
         }}
         placeholder="Your cover letter will appear here..."
-        className={`w-full flex-1 bg-fordham-brown text-fordham-white rounded-[8px] p-4 placeholder:text-fordham-gray/60 focus:outline-none resize-none
+        className={`w-full flex-1 bg-fordham-brown text-fordham-white rounded-[8px] placeholder:text-fordham-gray/60 focus:outline-none resize-none
           ${error ? "border border-red-500" : ""}`}
       />
     </div>

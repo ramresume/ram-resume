@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconFileText, IconTags, IconInfoCircle, IconCopy } from "@tabler/icons-react";
+import { IconFileText, IconTags, IconInfoCircle, IconCopy, IconFileText as IconFileDescription } from "@tabler/icons-react";
 import toast from "react-hot-toast";
 
 const ScanCard = ({ scan }) => {
@@ -18,6 +18,19 @@ const ScanCard = ({ scan }) => {
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
     toast.success("Copied to clipboard!");
+  };
+
+  const handleCopyAllBullets = (item) => {
+    const allBullets = item.bullets.join('\n\n');
+    navigator.clipboard.writeText(allBullets);
+    toast.success("All bullet points copied to clipboard!");
+  };
+
+  const handleCopyCoverLetter = () => {
+    if (scan.coverLetter) {
+      navigator.clipboard.writeText(scan.coverLetter);
+      toast.success("Cover letter copied to clipboard!");
+    }
   };
 
   return (
@@ -110,6 +123,28 @@ const ScanCard = ({ scan }) => {
           ))}
         </div>
       </div>
+
+      {/* Cover Letter Section */}
+      {scan.coverLetter && (
+        <div className="flex flex-col gap-4 border-t border-fordham-black/20 pt-10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-fordham-gray/60">
+              <IconFileDescription className="w-4 h-4 md:w-6 md:h-6" />
+              <span className="text-sm md:text-base font-medium">Cover Letter</span>
+            </div>
+            <button
+              onClick={handleCopyCoverLetter}
+              className="p-1 hover:bg-fordham-black/20 rounded flex items-center gap-1 text-fordham-gray hover:text-fordham-white"
+            >
+              <IconCopy className="w-4 h-4" />
+              <span className="text-xs">Copy</span>
+            </button>
+          </div>
+          <div className="bg-fordham-black/20 rounded-[16px] p-6">
+            <p className="text-fordham-white/90 text-sm whitespace-pre-wrap">{scan.coverLetter}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
