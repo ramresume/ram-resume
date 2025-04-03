@@ -56,17 +56,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 require("../config/passport")(passport);
 
-// Apply standard rate limiter to all routes by default
+// Apply standard rate limiter to all routes as a general protection
+// This will only affect unauthenticated users (bots, etc.)
 app.use(limiters.standard);
 
-// Routes with specific rate limits
+// Routes
 app.use("/auth", limiters.auth, require("../routes/auth"));
 app.use("/api", require("../routes/user"));
 app.use("/api", require("../routes/test"));
-app.use("/api", limiters.aiProcessing, require("../routes/extract-keywords"));
-app.use("/api", limiters.aiProcessing, require("../routes/resume"));
-app.use("/api", limiters.aiProcessing, require("../routes/cover-letter"));
-app.use("/api", limiters.fileUpload, require("../routes/file"));
+app.use("/api", require("../routes/extract-keywords"));
+app.use("/api", require("../routes/resume"));
+app.use("/api", require("../routes/cover-letter"));
+app.use("/api", require("../routes/file"));
 app.use("/api", require("../routes/scan-history"));
 
 // Test route

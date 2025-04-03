@@ -1,7 +1,7 @@
 // routes/user.js
 const express = require("express");
 const router = express.Router();
-const { checkUsage } = require("../controllers/UserUsage.controller.js");
+const { checkUsage, resetIfNeeded } = require("../controllers/UserUsage.controller.js");
 const { updateUser } = require("../controllers/User.controller.js");
 const { authenticate } = require("../middleware/auth.js");
 
@@ -25,7 +25,12 @@ router.get("/user", authenticate, (req, res) => {
 // Add usage endpoint
 router.get("/usage", authenticate, async (req, res) => {
   try {
-    const usage = await checkUsage(req.user._id);
+    // Get initial usage data
+    let usage = await checkUsage(req.user._id);
+
+    // Check if tokens need to be reset based on date
+    usage = await resetIfNeeded(usage);
+
     res.json({
       remainingUses: usage.remainingUses,
       resetDate: usage.resetDate,

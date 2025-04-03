@@ -18,7 +18,7 @@ import { mockKeywords, mockBulletPoints, mockCoverLetter } from "../../server/mo
 export default function Toolbox() {
   const { request, loading } = useApi();
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, checkUsage } = useAuth();
   const [isScanHistoryOpen, setIsScanHistoryOpen] = useState(false);
   const [state, setState] = useState({
     toolboxActive: true,
@@ -54,6 +54,17 @@ export default function Toolbox() {
   } = state;
 
   const updateState = (updates) => setState((prev) => ({ ...prev, ...updates }));
+
+  // Check usage when the component loads
+  useEffect(() => {
+    const checkUserUsage = async () => {
+      if (user && !authLoading) {
+        await checkUsage();
+      }
+    };
+
+    checkUserUsage();
+  }, [user, authLoading, checkUsage]);
 
   // Handle beforeunload event
   useEffect(() => {
@@ -130,21 +141,18 @@ export default function Toolbox() {
           body: JSON.stringify({ jobDescription, company, jobTitle }),
         });
         updateState({ keywords: data.keywords, scanId: data.scanId });
-
       } else if (activeStep === 3) {
         const data = await request("/api/resume", {
           method: "POST",
           body: JSON.stringify({ jobDescription, resume, scanId }),
         });
         updateState({ bulletPoints: data, scanId: data.scanId });
-
       } else if (activeStep === 4) {
         const data = await request("/api/cover-letter", {
           method: "POST",
           body: JSON.stringify({ jobDescription, resume, scanId }),
         });
         updateState({ coverLetter: data.coverLetter });
-
       }
     } catch (error) {
       console.error("Request failed:", error);

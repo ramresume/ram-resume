@@ -6,6 +6,28 @@ import toast from "react-hot-toast";
 
 const AuthContext = createContext();
 
+// Helper to save token to localStorage
+const saveToken = (token) => {
+  if (typeof window !== "undefined") {
+    localStorage.setItem("authToken", token);
+  }
+};
+
+// Helper to get token from localStorage
+const getToken = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("authToken");
+  }
+  return null;
+};
+
+// Helper to remove token from localStorage
+const removeToken = () => {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("authToken");
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,6 +56,11 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Failed to fetch user", error);
       setUser(null);
+
+      // Remove token if authentication failed
+      if (error.response?.status === 401) {
+        removeToken();
+      }
 
       // Handle terms-specific errors
       if (error.response?.status === 403 && error.response?.data?.requiresTerms) {
@@ -67,7 +94,18 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const checkUsage = useCallback(async () => {
+    setUsageError(""); // Clear previous errors
+
     try {
+      // If user isn't loaded yet, wait a moment and retry
+      if (!user) {
+        await loadUser();
+        if (!user) {
+          setUsageError("User authentication required");
+          return false;
+        }
+      }
+
       const usageData = await request("/api/usage", { method: "GET" });
       setUsage(usageData);
 
@@ -82,20 +120,29 @@ export const AuthProvider = ({ children }) => {
         return false;
       }
 
-      setUsageError("");
       return true;
     } catch (error) {
       console.error("Error checking usage:", error);
-      setUsageError("Failed to check usage limits. Please try again.");
+
+      // Handle authentication errors
+      if (error.response?.status === 401) {
+        setUsageError("Please log in to check your usage");
+        removeToken();
+        return false;
+      }
+
+      // Set a more user-friendly error message
+      setUsageError("Unable to check usage limits. Please try refreshing the page.");
       return false;
     }
-  }, [request]);
+  }, [request, user, loadUser]);
 
   const logout = useCallback(async () => {
     try {
       setLoading(true);
       await request("/auth/logout", { method: "GET" });
       setUser(null);
+      removeToken(); // Remove token on logout
       router.push("/");
       toast.success("Successfully logged out");
     } catch (error) {
@@ -108,7 +155,12 @@ export const AuthProvider = ({ children }) => {
   }, [request, router]);
 
   useEffect(() => {
-    loadUser();
+    // Attempt to load user if there's a token
+    if (getToken()) {
+      loadUser();
+    } else {
+      setLoading(false);
+    }
   }, [loadUser]);
 
   useEffect(() => {
@@ -116,6 +168,14 @@ export const AuthProvider = ({ children }) => {
       if (event.origin !== process.env.NEXT_PUBLIC_SERVER_URL) return;
 
       if (event.data.type === "LOGIN_SUCCESS") {
+        // Store the JWT token
+        if (event.data.token) {
+          saveToken(event.data.token);
+          console.log("JWT token received and saved");
+        } else {
+          console.error("No token received in login success message");
+        }
+
         setIsNewLogin(true);
         loadUser();
         if (event.data.requiresTerms) {
@@ -141,6 +201,7 @@ export const AuthProvider = ({ children }) => {
     usage,
     usageError,
     checkUsage,
+    getToken, // Expose token getter
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

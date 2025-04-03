@@ -1,6 +1,13 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
+// Check for JWT_SECRET at startup
+if (!process.env.JWT_SECRET) {
+  console.error("ERROR: JWT_SECRET environment variable is not set!");
+  console.error("Authentication will not work correctly without this variable.");
+  console.error("Please set JWT_SECRET in your environment variables.");
+}
+
 module.exports = {
   /**
    * Middleware to ensure user is authenticated through either session or JWT
@@ -22,6 +29,12 @@ module.exports = {
         return res.status(401).json({ error: "Authentication required" });
       }
 
+      // Check for JWT_SECRET
+      if (!process.env.JWT_SECRET) {
+        console.error("JWT_SECRET is not defined in environment variables");
+        return res.status(500).json({ error: "Server authentication configuration error" });
+      }
+
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       // Find user by ID from token
@@ -35,6 +48,7 @@ module.exports = {
       req.user = user;
       return next();
     } catch (error) {
+      console.error("Authentication error:", error.message);
       if (error.name === "JsonWebTokenError") {
         return res.status(401).json({ error: "Invalid token" });
       }
@@ -64,14 +78,25 @@ module.exports = {
    * @returns {String} JWT token
    */
   generateToken: (user) => {
-    return jwt.sign(
-      {
-        id: user.id,
-        email: user.email,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // Check for JWT_SECRET
+    if (!process.env.JWT_SECRET) {
+      console.error("ERROR: JWT_SECRET is not defined in environment variables");
+      throw new Error("Server authentication configuration error: JWT_SECRET missing");
+    }
+
+    try {
+      return jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      );
+    } catch (error) {
+      console.error("Token generation error:", error);
+      throw new Error("Failed to generate authentication token");
+    }
   },
 };
 

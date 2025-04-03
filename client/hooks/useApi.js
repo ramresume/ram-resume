@@ -5,6 +5,14 @@ const BASE_URL =
     ? process.env.NEXT_PUBLIC_SERVER_URL?.replace("https://", "http://")
     : process.env.NEXT_PUBLIC_SERVER_URL;
 
+// Helper to get token from localStorage
+const getToken = () => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("authToken");
+  }
+  return null;
+};
+
 export const useApi = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -15,8 +23,16 @@ export const useApi = () => {
 
     try {
       const headers = { ...options.headers };
+
+      // Add Content-Type header if not FormData
       if (!(options.body instanceof FormData)) {
         headers["Content-Type"] = "application/json";
+      }
+
+      // Add Authorization header with JWT token if available
+      const token = getToken();
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
       }
 
       const response = await fetch(`${BASE_URL}${endpoint}`, {

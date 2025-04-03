@@ -3,12 +3,10 @@ const { checkUsage, resetIfNeeded } = require("../controllers/UserUsage.controll
 
 const checkUsageLimit = async (req, res, next) => {
   try {
-    if (!req.isAuthenticated()) {
-      return res.status(401).json({ error: "Authentication required" });
-    }
-
+    // This middleware should be used after authentication
+    // So req.user should already be available
     if (!req.user || !req.user._id) {
-      return res.status(400).json({ error: "Invalid user data" });
+      return res.status(401).json({ error: "Authentication required" });
     }
 
     let usage = await checkUsage(req.user._id);
