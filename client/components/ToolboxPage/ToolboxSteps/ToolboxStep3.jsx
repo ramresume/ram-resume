@@ -49,10 +49,16 @@ as they typically don't highlight specific skills. Only resumes in English, plea
         const file = new File([blob], response[0].filename, { type: "application/pdf" });
         setUploadedResume(file);
         setResumeInfo(response[0]);
+      } else {
+        // Clear resume state if no files found
+        setUploadedResume(null);
+        setResumeInfo(null);
       }
     } catch (error) {
       console.error("Error fetching resume:", error);
       setError("Failed to fetch resume. Please try again.");
+      setUploadedResume(null);
+      setResumeInfo(null);
     }
   }, [setError]);
 
@@ -107,9 +113,13 @@ as they typically don't highlight specific skills. Only resumes in English, plea
     }
   };
 
+  const handleOpenModal = () => {
+    setResumeModalActive(true);
+  };
+
   return (
     <div className="flex flex-col gap-4 h-full">
-      {uploadedResume && (
+      {uploadedResume ? (
         <div className="bg-fordham-black/30 p-4 rounded-[8px] flex justify-between items-center">
           <div className="flex gap-2 items-center">
             <IconFile className="w-6 h-6 text-fordham-gray/60" />
@@ -131,15 +141,33 @@ as they typically don't highlight specific skills. Only resumes in English, plea
               className="w-auto"
             />
           </div>
-          {resumeModalActive && (
-            <ResumeModal
-              active={resumeModalActive}
-              setActive={setResumeModalActive}
-              onResumeUpdate={handleResumeUpdate}
-            />
-          )}
+        </div>
+      ) : (
+        <div className="bg-fordham-black/30 p-6 rounded-[8px] flex flex-col items-center justify-center gap-4">
+          <div className="text-fordham-white text-center">
+            <p className="mb-2">No resume uploaded</p>
+            <p className="text-fordham-gray/60 text-sm mb-4">
+              Upload your resume to analyze and enhance it
+            </p>
+          </div>
+          <Button
+            variant="secondary"
+            text="Upload Resume"
+            icon={<IconUpload className="w-5 h-5" />}
+            onClick={handleOpenModal}
+            className="w-auto"
+          />
         </div>
       )}
+
+      {resumeModalActive && (
+        <ResumeModal
+          active={resumeModalActive}
+          setActive={setResumeModalActive}
+          onResumeUpdate={handleResumeUpdate}
+        />
+      )}
+
       <textarea
         value={resume}
         onChange={(e) => {
