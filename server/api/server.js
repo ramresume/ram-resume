@@ -20,28 +20,45 @@ const allowedOrigins = [
   "http://localhost:3000",
 ];
 
-// CORS configuration
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl, etc)
-    if (!origin) return callback(null, true);
+// Configure CORS
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps, curl, etc)
+      if (!origin) {
+        console.log("Allowing request with no origin");
+        return callback(null, true);
+      }
 
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.warn(`Origin ${origin} not allowed by CORS`);
-      callback(null, false);
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
-};
+      // Clean up origin by removing any trailing slashes
+      const cleanOrigin = origin.endsWith("/") ? origin.slice(0, -1) : origin;
 
-app.use(cors(corsOptions));
+      if (allowedOrigins.includes(cleanOrigin)) {
+        console.log(`Allowed origin: ${cleanOrigin}`);
+        return callback(null, true);
+      }
 
-// Handle preflight requests for all routes
-app.options("*", cors(corsOptions));
+      console.warn(`Blocked origin: ${cleanOrigin}`);
+      return callback(new Error(`Origin ${cleanOrigin} not allowed by CORS`));
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
+);
+
+// Add this before your routes to handle trailing slashes
+app.use((req, res, next) => {
+  // Remove trailing slashes from URL to avoid redirects
+  if (req.path.length > 1 && req.path.endsWith("/")) {
+    const query = req.url.slice(req.path.length);
+    const safePath = req.path.slice(0, -1).replace(/\/+/g, "/");
+    return res.redirect(301, safePath + query);
+  }
+  next();
+});
 
 // Trust the first proxy to enable cookie sharing between the client and the server
 app.set("trust proxy", 1);

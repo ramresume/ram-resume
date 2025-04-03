@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useAuth } from "../context/AuthContext";
 
 const BASE_URL =
   process.env.NODE_ENV === "development"
@@ -14,98 +15,78 @@ const getToken = () => {
 };
 
 export const useApi = () => {
+  const { getToken } = useAuth() || { getToken: () => null };
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const request = useCallback(async (endpoint, options = {}) => {
-    setLoading(true);
-    setError(null);
+  const request = useCallback(
+    async (endpoint, options = {}) => {
+      setLoading(true);
+      setError(null);
 
-    try {
-      const headers = { ...options.headers };
+      try {
+        // Ensure endpoint starts with a slash but doesn't create a double slash
+        const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+        
+        // Fix the URL to avoid double slashes
+        const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL;
+        const url = `${baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl}${normalizedEndpoint}`;
+        
+        const headers = {
+          "Content-Type": "application/json",
+          ...(options.headers || {}),
+        };
 
-      // Add Content-Type header if not FormData
-      if (!(options.body instanceof FormData)) {
-        headers["Content-Type"] = "application/json";
-      }
+        // Add auth token if available
+        const token = getToken();
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
+        }
 
-      // Add Authorization header with JWT token if available
-      const token = getToken();
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
+        const response = await fetch(url, {
+          ...options,
+          headers,
+          credentials: "include",
+        });
 
-      const response = await fetch(`${BASE_URL}${endpoint}`, {
-        ...options,
-        credentials: "include",
-        headers,
-        ...(process.env.NODE_ENV === "development" && {
-          rejectUnauthorized: false,
-        }),
-      });
-
-      if (!response.ok) {
+        // Handle non-JSON responses
         const contentType = response.headers.get("content-type");
-        let errorData;
-
-        if (contentType?.includes("application/json")) {
-          errorData = await response.json();
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          
+          if (!response.ok) {
+            throw { 
+              response: {
+                status: response.status,
+                data
+              },
+              message: data.error || `Request failed with status ${response.status}`
+            };
+          }
+          
+          return data;
         } else {
-          errorData = { error: await response.text() };
-        }
-
-        if (response.status === 403) {
-          if (errorData.requiresTerms) {
-            throw {
+          if (!response.ok) {
+            throw { 
               response: {
-                status: 403,
-                data: { requiresTerms: true, error: "Terms acceptance required" },
+                status: response.status
               },
+              message: `Request failed with status ${response.status}`
             };
           }
-          if (errorData.error === "Weekly usage limit reached") {
-            throw {
-              response: {
-                status: 403,
-                data: {
-                  error: "Weekly usage limit reached",
-                  resetDate: errorData.resetDate,
-                  remainingUses: errorData.remainingUses,
-                },
-              },
-            };
-          }
+          
+          return await response.text();
         }
-
-        if (response.status === 401) {
-          throw {
-            response: {
-              status: 401,
-              data: { error: "Please log in to access this resource" },
-            },
-          };
-        }
-
-        throw new Error(errorData.error || "API request failed");
+      } catch (error) {
+        console.error("API request error:", error);
+        setError(error.response?.data?.error || error.message);
+        throw error;
+      } finally {
+        setLoading(false);
       }
-
-      if (options.responseType === "blob") {
-        return await response.blob();
-      }
-
-      const contentType = response.headers.get("content-type");
-      if (contentType?.includes("application/json")) {
-        return await response.json();
-      }
-
-      return await response.text();
-    } catch (err) {
-      setError(err.response?.data?.error || err.message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [getToken]
+  );
 
   return { request, loading, error };
 };
