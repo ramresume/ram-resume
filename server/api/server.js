@@ -6,7 +6,6 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-
 const app = express();
 mongoose.set("strictQuery", true);
 
@@ -75,3 +74,5 @@ app.use(require("../utils/errorHandler"));
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port http://localhost:${PORT}`));
+
+module.exports = app;
