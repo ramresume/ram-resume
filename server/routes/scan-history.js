@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { getUserScanHistory } = require("../controllers/ScanHistory.controller");
-const { ensureAuthenticated } = require("../middleware/auth");
+const { authenticate } = require("../middleware/auth");
 
-router.get("/scan-history", ensureAuthenticated, async (req, res) => {
+router.get("/scan-history", authenticate, async (req, res) => {
   try {
     const history = await getUserScanHistory(req.user._id);
     res.json(history);

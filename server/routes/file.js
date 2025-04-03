@@ -2,13 +2,13 @@ const express = require("express");
 const router = express.Router();
 const File = require("../models/File");
 const upload = require("../middleware/upload");
-const { ensureAuthenticated } = require("../middleware/auth");
+const { authenticate } = require("../middleware/auth");
 const multerErrorHandler = require("../middleware/multerErrorHandler");
 const pdf = require("pdf-parse");
 
 router.post(
   "/upload",
-  ensureAuthenticated,
+  authenticate,
   (req, res, next) => {
     upload.single("file")(req, res, (err) => {
       if (err) {
@@ -43,7 +43,7 @@ router.post(
   }
 );
 // Get file metadata
-router.get("/files", ensureAuthenticated, async (req, res) => {
+router.get("/files", authenticate, async (req, res) => {
   try {
     const files = await File.find({ userId: req.user._id }).select("-data");
     res.json(files);
@@ -54,7 +54,7 @@ router.get("/files", ensureAuthenticated, async (req, res) => {
 });
 
 // Download file
-router.get("/files/download", ensureAuthenticated, async (req, res) => {
+router.get("/files/download", authenticate, async (req, res) => {
   try {
     const file = await File.findOne({ userId: req.user._id });
     if (!file) {
@@ -74,7 +74,7 @@ router.get("/files/download", ensureAuthenticated, async (req, res) => {
   }
 });
 
-router.post("/extract-text", ensureAuthenticated, upload.single("file"), async (req, res) => {
+router.post("/extract-text", authenticate, upload.single("file"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });

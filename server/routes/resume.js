@@ -2,15 +2,14 @@ const express = require("express");
 const router = express.Router();
 const OpenAI = require("openai");
 const { validateText } = require("../middleware/validateText.js");
-const requireTerms = require("../middleware/requireTerms.js");
-const { ensureAuthenticated } = require("../middleware/auth.js");
+const { authenticate, requireTerms } = require("../middleware/auth.js");
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const { SYSTEM_PROMPT_RESUME_ENHANCER } = require("../config/constants");
 const { updateScanHistory } = require("../controllers/ScanHistory.controller.js");
 
 router.post(
   "/resume",
-  ensureAuthenticated,
+  authenticate,
   requireTerms,
   validateText("RESUME_ENHANCER"),
   async (req, res) => {

@@ -7,6 +7,7 @@ const MongoStore = require("connect-mongo");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const app = express();
+const limiters = require("../middleware/rateLimiter");
 mongoose.set("strictQuery", true);
 
 // Database connection
@@ -55,15 +56,19 @@ app.use(passport.initialize());
 app.use(passport.session());
 require("../config/passport")(passport);
 
-// Routes
-app.use("/auth", require("../routes/auth"));
+// Apply standard rate limiter to all routes by default
+app.use(limiters.standard);
+
+// Routes with specific rate limits
+app.use("/auth", limiters.auth, require("../routes/auth"));
 app.use("/api", require("../routes/user"));
 app.use("/api", require("../routes/test"));
-app.use("/api", require("../routes/extract-keywords"));
-app.use("/api", require("../routes/resume"));
-app.use("/api", require("../routes/cover-letter"));
-app.use("/api", require("../routes/file"));
+app.use("/api", limiters.aiProcessing, require("../routes/extract-keywords"));
+app.use("/api", limiters.aiProcessing, require("../routes/resume"));
+app.use("/api", limiters.aiProcessing, require("../routes/cover-letter"));
+app.use("/api", limiters.fileUpload, require("../routes/file"));
 app.use("/api", require("../routes/scan-history"));
+
 // Test route
 app.get("/", (req, res) => {
   res.send("AI Career Toolbox server is running!");

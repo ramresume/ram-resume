@@ -1,16 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const { OpenAI } = require("openai");
-
-const requireTerms = require("../middleware/requireTerms.js");
-const { ensureAuthenticated } = require("../middleware/auth.js");
-
+const { authenticate, requireTerms } = require("../middleware/auth.js");
 const { SYSTEM_PROMPT_COVER_LETTER } = require("../config/constants");
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-router.post("/cover-letter", ensureAuthenticated, requireTerms, async (req, res) => {
+router.post("/cover-letter", authenticate, requireTerms, async (req, res) => {
   try {
     const { resume, jobDescription } = req.body;
 

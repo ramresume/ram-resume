@@ -4,16 +4,14 @@ const OpenAI = require("openai");
 const checkUsageLimit = require("../middleware/UserUsage.js");
 const { decrementUsage, incrementTotalScans } = require("../controllers/UserUsage.controller.js");
 const { validateText } = require("../middleware/validateText.js");
-const requireTerms = require("../middleware/requireTerms.js");
-const { ensureAuthenticated } = require("../middleware/auth.js");
+const { authenticate, requireTerms } = require("../middleware/auth.js");
 const openai = new OpenAI(process.env.OPENAI_API_KEY);
 const { SYSTEM_PROMPT_KEYWORDS_EXTRACTION } = require("../config/constants");
-const { mockKeywords } = require("../mockdata");
 const { createScanHistory } = require("../controllers/ScanHistory.controller.js");
 
 router.post(
   "/extract-keywords",
-  ensureAuthenticated,
+  authenticate,
   requireTerms,
   validateText("KEYWORD_EXTRACTOR"),
   checkUsageLimit,
@@ -61,9 +59,6 @@ router.post(
           throw new Error("Unable to parse keywords from OpenAI response");
         }
       }
-
-      // Uncomment the following line to use mock data
-      // const keywords = mockKeywords;
 
       // Save scan history
       const scanId = await createScanHistory(req.user._id, {

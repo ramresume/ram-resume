@@ -3,18 +3,10 @@ const express = require("express");
 const router = express.Router();
 const { checkUsage } = require("../controllers/UserUsage.controller.js");
 const { updateUser } = require("../controllers/User.controller.js");
-
-// Middleware to check if user is authenticated
-const isAuthenticated = (req, res, next) => {
-  // console.log("isAuthenticated:", req.isAuthenticated());
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.status(401).json({ error: "Not authenticated" });
-};
+const { authenticate } = require("../middleware/auth.js");
 
 // User route to get user data
-router.get("/user", isAuthenticated, (req, res) => {
+router.get("/user", authenticate, (req, res) => {
   res.json({
     id: req.user.id,
     email: req.user.email,
@@ -31,7 +23,7 @@ router.get("/user", isAuthenticated, (req, res) => {
 });
 
 // Add usage endpoint
-router.get("/usage", isAuthenticated, async (req, res) => {
+router.get("/usage", authenticate, async (req, res) => {
   try {
     const usage = await checkUsage(req.user._id);
     res.json({
@@ -39,13 +31,14 @@ router.get("/usage", isAuthenticated, async (req, res) => {
       resetDate: usage.resetDate,
       totalScans: usage.totalScans,
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("Error fetching usage data:", err);
     res.status(500).json({ error: "Error fetching usage data" });
   }
 });
 
 // PUT route to update user profile
-router.put("/user", isAuthenticated, async (req, res) => {
+router.put("/user", authenticate, async (req, res) => {
   try {
     const {
       firstName,
