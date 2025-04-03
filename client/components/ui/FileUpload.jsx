@@ -57,11 +57,25 @@ export default function FileUpload({ onSuccess }) {
     formData.append("file", file);
 
     try {
-      const response = await api.request("/api/upload", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/upload`, {
         method: "POST",
         body: formData,
-        headers: {},
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        credentials: "include",
       });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw {
+          response: {
+            status: response.status,
+            data: errorData,
+          },
+          message: errorData.error || `Upload failed with status ${response.status}`,
+        };
+      }
 
       // Mark onboarding as completed
       if (pathname === "/onboarding") {

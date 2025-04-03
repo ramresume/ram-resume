@@ -46,6 +46,12 @@ const Button = ({
         "bg-fordham-white/5 text-fordham-light-gray outline outline-[6px] outline-fordham-white/20 scale-95 shadow-inner",
       disabled: "text-fordham-dark-gray cursor-not-allowed",
     },
+    danger: {
+      default: "font-medium bg-red-600 text-fordham-white border-transparent",
+      hover: "hover:bg-red-700",
+      pressed: "outline outline-[6px] outline-red-600/20 scale-95 shadow-inner",
+      disabled: "font-medium bg-red-300 text-fordham-white/70 cursor-not-allowed",
+    },
   };
 
   const getButtonStyles = () => {

@@ -11,6 +11,7 @@ import {
   IconPencil,
   IconTrophy,
   IconX,
+  IconTrash,
 } from "@tabler/icons-react";
 import PageContainer from "@/components/PageContainer";
 import GradientContainer from "@/components/ui/GradientContainer";
@@ -18,6 +19,7 @@ import ProfileEditForm from "@/components/Profile/ProfileEditForm";
 import { useApi } from "@/hooks/useApi";
 import ResumeModal from "@/components/Profile/ResumeModal";
 import ScanHistory from "@/components/Profile/ScanHistory";
+import DeleteAccountModal from "@/components/Profile/DeleteAccountModal";
 import Head from "next/head";
 
 export default function Profile() {
@@ -26,6 +28,7 @@ export default function Profile() {
   const [isUploading, setIsUploading] = useState(false);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
   const [isScanHistoryOpen, setIsScanHistoryOpen] = useState(false);
+  const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] = useState(false);
   const [resume, setResume] = useState(null);
   const router = useRouter();
   const api = useApi();
@@ -155,6 +158,13 @@ export default function Profile() {
                   <button className="md:hidden bg-fordham-white rounded-[8px] p-4" onClick={logout}>
                     <IconLogout className="w-6 h-6 text-fordham-black" />
                   </button>
+
+                  <button
+                    className="md:hidden bg-red-600 rounded-[8px] p-4"
+                    onClick={() => setIsDeleteAccountModalOpen(true)}
+                  >
+                    <IconTrash className="w-6 h-6 text-fordham-white" />
+                  </button>
                 </div>
               </div>
 
@@ -176,8 +186,14 @@ export default function Profile() {
                 </div>
               </div>
 
-              <div className="hidden md:block">
+              <div className="hidden md:flex md:gap-4">
                 <Button icon={<IconLogout />} onClick={logout} text="Log out" variant="primary" />
+                <Button
+                  icon={<IconTrash />}
+                  onClick={() => setIsDeleteAccountModalOpen(true)}
+                  text="Delete Account"
+                  variant="danger"
+                />
               </div>
             </div>
 
@@ -234,6 +250,13 @@ export default function Profile() {
         )}
 
         {isResumeOpen && <ResumeModal active={isResumeOpen} setActive={setIsResumeOpen} />}
+
+        {isDeleteAccountModalOpen && (
+          <DeleteAccountModal
+            active={isDeleteAccountModalOpen}
+            setActive={setIsDeleteAccountModalOpen}
+          />
+        )}
       </GradientContainer>
     </>
   );

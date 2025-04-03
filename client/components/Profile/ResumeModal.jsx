@@ -22,9 +22,19 @@ export default function ResumeModal({ active, setActive, onResumeUpdate }) {
   const fetchPdf = async () => {
     if (!resume) return;
     try {
-      const blob = await api.request("/api/files/download", {
-        responseType: "blob",
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/files/download`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        credentials: "include",
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
       const url = URL.createObjectURL(blob);
       setPdfUrl(url);
     } catch (error) {
@@ -59,10 +69,20 @@ export default function ResumeModal({ active, setActive, onResumeUpdate }) {
 
   const handleDownload = async () => {
     try {
-      const response = await api.request("/api/files/download", {
-        responseType: "blob",
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/files/download`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        credentials: "include",
       });
-      const url = URL.createObjectURL(response);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = resume?.filename || "resume.pdf";

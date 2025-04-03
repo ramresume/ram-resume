@@ -224,6 +224,22 @@ export const AuthProvider = ({ children }) => {
     }
   }, [router]);
 
+  const deleteAccount = useCallback(async () => {
+    try {
+      setLoading(true);
+      await apiClient.request("/api/user", { method: "DELETE" });
+      setUser(null);
+      removeToken();
+      router.push("/");
+      toast.success("Your account has been deleted");
+    } catch (error) {
+      setError("Account deletion failed. Please try again.");
+      toast.error("Account deletion failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [router]);
+
   // Load user on initial render if token exists
   useEffect(() => {
     // Attempt to load user if there's a token
@@ -264,20 +280,23 @@ export const AuthProvider = ({ children }) => {
     return () => window.removeEventListener("message", handleMessage);
   }, [loadUser, router]);
 
-  const value = {
+  const authContextValue = {
     user,
     loading,
     error,
     login,
     logout,
+    deleteAccount,
+    loadUser,
     acceptTerms,
+    checkUsage,
+    isLoggedIn: !!user,
     usage,
     usageError,
-    checkUsage,
-    getToken, // Expose token getter
+    getToken,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={authContextValue}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const { checkUsage, resetIfNeeded } = require("../controllers/UserUsage.controller.js");
-const { updateUser } = require("../controllers/User.controller.js");
+const { updateUser, deleteUser } = require("../controllers/User.controller.js");
 const { authenticate } = require("../middleware/auth.js");
 
 // User route to get user data
@@ -87,6 +87,29 @@ router.put("/user", authenticate, async (req, res) => {
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ error: "Failed to update user profile" });
+  }
+});
+
+// DELETE route to delete user account and all associated data
+router.delete("/user", authenticate, async (req, res) => {
+  try {
+    await deleteUser(req.user._id);
+    
+    // Clear session and cookies
+    req.logout(function(err) {
+      if (err) {
+        console.error("Error during logout process:", err);
+        return res.status(500).json({ error: "Error during account deletion process" });
+      }
+      
+      req.session.destroy();
+      
+      // Send success response
+      res.status(200).json({ success: true, message: "Account successfully deleted" });
+    });
+  } catch (error) {
+    console.error("Error deleting user account:", error);
+    res.status(500).json({ error: "Failed to delete user account" });
   }
 });
 

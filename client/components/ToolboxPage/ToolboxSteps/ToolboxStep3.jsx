@@ -29,10 +29,22 @@ as they typically don't highlight specific skills. Only resumes in English, plea
     try {
       const response = await api.request("/api/files");
       if (response?.[0]) {
-        const pdfResponse = await api.request("/api/files/download", {
-          responseType: "blob",
+        const pdfResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/files/download`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+          credentials: "include",
         });
-        setUploadedResume(pdfResponse);
+        
+        if (!pdfResponse.ok) {
+          throw new Error(`HTTP error! status: ${pdfResponse.status}`);
+        }
+        
+        const blob = await pdfResponse.blob();
+        // Convert blob to File object with proper name for FormData compatibility
+        const file = new File([blob], response[0].filename, { type: "application/pdf" });
+        setUploadedResume(file);
         setResumeInfo(response[0]);
       }
     } catch (error) {
@@ -53,11 +65,29 @@ as they typically don't highlight specific skills. Only resumes in English, plea
       try {
         const formData = new FormData();
         formData.append("file", uploadedResume);
-        const response = await api.request("/api/extract-text", {
+        
+        const extractResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/extract-text`, {
           method: "POST",
           body: formData,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+          credentials: "include",
         });
-        setResume(response.text.trim());
+        
+        if (!extractResponse.ok) {
+          const errorData = await extractResponse.json().catch(() => ({}));
+          throw {
+            response: {
+              status: extractResponse.status,
+              data: errorData
+            },
+            message: errorData.error || `Text extraction failed with status ${extractResponse.status}`
+          };
+        }
+        
+        const data = await extractResponse.json();
+        setResume(data.text.trim());
       } catch (error) {
         console.error("Error extracting text:", error);
       }
