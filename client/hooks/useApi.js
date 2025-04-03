@@ -1,13 +1,7 @@
 import { useState, useCallback } from "react";
-import { useAuth } from "../context/AuthContext";
 
-const BASE_URL =
-  process.env.NODE_ENV === "development"
-    ? process.env.NEXT_PUBLIC_SERVER_URL?.replace("https://", "http://")
-    : process.env.NEXT_PUBLIC_SERVER_URL;
-
-// Helper to get token from localStorage
-const getToken = () => {
+// Create a helper to get the token directly
+const getTokenFromStorage = () => {
   if (typeof window !== "undefined") {
     return localStorage.getItem("authToken");
   }
@@ -15,9 +9,24 @@ const getToken = () => {
 };
 
 export const useApi = () => {
-  const { getToken } = useAuth() || { getToken: () => null };
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // Get auth context if available, but don't fail if not
+  let authToken = null;
+  try {
+    // Dynamic import to avoid circular dependency during SSR
+    if (typeof window !== "undefined") {
+      const { useAuth } = require("../context/AuthContext");
+      const auth = useAuth();
+      if (auth && auth.getToken) {
+        authToken = auth.getToken();
+      }
+    }
+  } catch (e) {
+    console.log("Auth context not available, using fallback");
+    authToken = getTokenFromStorage();
+  }
 
   const request = useCallback(
     async (endpoint, options = {}) => {
@@ -37,8 +46,8 @@ export const useApi = () => {
           ...(options.headers || {}),
         };
 
-        // Add auth token if available
-        const token = getToken();
+        // Get the token from storage as a fallback
+        const token = authToken || getTokenFromStorage();
         if (token) {
           headers["Authorization"] = `Bearer ${token}`;
         }
@@ -85,7 +94,7 @@ export const useApi = () => {
         setLoading(false);
       }
     },
-    [getToken]
+    [authToken]
   );
 
   return { request, loading, error };
