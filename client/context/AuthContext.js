@@ -1,7 +1,5 @@
-// client/context/AuthContext.js
 import React, { createContext, useState, useContext, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/router";
-import { useApi } from "../hooks/useApi";
 import toast from "react-hot-toast";
 
 const AuthContext = createContext();
@@ -37,18 +35,18 @@ export const AuthProvider = ({ children }) => {
   const [usageError, setUsageError] = useState("");
   const router = useRouter();
   const isLoadingRef = useRef(false);
-  
+
   // Create API client without using useAuth to avoid circular dependency
   const apiClient = {
     request: async (endpoint, options = {}) => {
       try {
         // Ensure endpoint starts with a slash but doesn't create a double slash
-        const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-        
+        const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+
         // Fix the URL to avoid double slashes
         const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL;
-        const url = `${baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl}${normalizedEndpoint}`;
-        
+        const url = `${baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl}${normalizedEndpoint}`;
+
         const headers = {
           "Content-Type": "application/json",
           ...(options.headers || {}),
@@ -70,19 +68,19 @@ export const AuthProvider = ({ children }) => {
           const contentType = response.headers.get("content-type");
           if (contentType && contentType.includes("application/json")) {
             const errorData = await response.json();
-            throw { 
+            throw {
               response: {
                 status: response.status,
-                data: errorData
+                data: errorData,
               },
-              message: errorData.error || `Request failed with status ${response.status}`
+              message: errorData.error || `Request failed with status ${response.status}`,
             };
           } else {
-            throw { 
+            throw {
               response: {
-                status: response.status
+                status: response.status,
               },
-              message: `Request failed with status ${response.status}`
+              message: `Request failed with status ${response.status}`,
             };
           }
         }
@@ -97,7 +95,7 @@ export const AuthProvider = ({ children }) => {
         console.error("API request error:", error);
         throw error;
       }
-    }
+    },
   };
 
   const loadUser = useCallback(async () => {
@@ -116,14 +114,20 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
 
       // Check terms status after login
-      if (userData && isNewLogin) {
-        if (!userData.hasAcceptedTerms) {
-          router.push("/terms");
-          toast.error("Please accept the terms to continue");
-        } else {
-          toast.success(`Welcome back, ${userData.firstName}!`);
+      if (userData) {
+        // Always show welcome toast if we have user data, which means login was successful
+        if (isNewLogin) {
+          if (!userData.hasAcceptedTerms) {
+            router.push("/terms");
+            toast.error("Please accept the terms to continue");
+          } else {
+            // Ensure toast appears with a slight delay to avoid it being missed
+            setTimeout(() => {
+              toast.success(`Welcome back, ${userData.firstName}!`);
+            }, 500);
+          }
+          setIsNewLogin(false);
         }
-        setIsNewLogin(false);
       }
     } catch (error) {
       console.error("Failed to fetch user", error);
@@ -165,13 +169,13 @@ export const AuthProvider = ({ children }) => {
     const left = (window.innerWidth - width) / 2;
     const top = (window.innerHeight - height) / 2;
     const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`;
-    
+
     window.open(url, "googleLoginPopup", `width=${width},height=${height},left=${left},top=${top}`);
   }, []);
 
   const checkUsage = useCallback(async () => {
     setUsageError(""); // Clear previous errors
-    
+
     try {
       // If user isn't loaded yet, wait a moment and retry
       if (!user) {
@@ -181,7 +185,7 @@ export const AuthProvider = ({ children }) => {
           return false;
         }
       }
-      
+
       const usageData = await apiClient.request("/api/usage", { method: "GET" });
       setUsage(usageData);
 
@@ -199,14 +203,14 @@ export const AuthProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error("Error checking usage:", error);
-      
+
       // Handle authentication errors
       if (error.response?.status === 401) {
         setUsageError("Please log in to check your usage");
         removeToken();
         return false;
       }
-      
+
       // Set a more user-friendly error message
       setUsageError("Unable to check usage limits. Please try refreshing the page.");
       return false;
@@ -255,6 +259,9 @@ export const AuthProvider = ({ children }) => {
         if (event.data.token) {
           saveToken(event.data.token);
           console.log("JWT token received and saved");
+          
+          // Show an immediate toast for login
+          toast.success("Login successful!");
           
           setIsNewLogin(true);
           loadUser();
