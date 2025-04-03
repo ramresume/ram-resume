@@ -39,8 +39,10 @@ export const AuthProvider = ({ children }) => {
   const { request } = useApi();
 
   const loadUser = useCallback(async () => {
+    console.log("Attempting to load user data...");
     try {
       const userData = await request("/api/user");
+      console.log("User data loaded successfully:", userData);
       setUser(userData);
 
       // Check terms status after login
@@ -59,6 +61,7 @@ export const AuthProvider = ({ children }) => {
 
       // Remove token if authentication failed
       if (error.response?.status === 401) {
+        console.log("Authentication failed (401), removing token");
         removeToken();
       }
 
@@ -85,11 +88,13 @@ export const AuthProvider = ({ children }) => {
   }, [request, router, loadUser]);
 
   const login = useCallback(() => {
+    console.log("Starting login process...");
     const width = 500;
     const height = 600;
     const left = (window.innerWidth - width) / 2;
     const top = (window.innerHeight - height) / 2;
     const url = `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/google`;
+
     window.open(url, "googleLoginPopup", `width=${width},height=${height},left=${left},top=${top}`);
   }, []);
 
@@ -154,34 +159,44 @@ export const AuthProvider = ({ children }) => {
     }
   }, [request, router]);
 
+  // Load user on initial render if token exists
   useEffect(() => {
+    console.log("Initial auth check...");
     // Attempt to load user if there's a token
     if (getToken()) {
+      console.log("Token found, loading user");
       loadUser();
     } else {
+      console.log("No token found, setting loading to false");
       setLoading(false);
     }
   }, [loadUser]);
 
+  // Handle OAuth message events
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.origin !== process.env.NEXT_PUBLIC_SERVER_URL) return;
+      console.log("Message received:", event.data);
 
       if (event.data.type === "LOGIN_SUCCESS") {
+        console.log("Login success message received!");
+
         // Store the JWT token
         if (event.data.token) {
           saveToken(event.data.token);
           console.log("JWT token received and saved");
+
+          setIsNewLogin(true);
+          loadUser();
+
+          if (event.data.requiresTerms) {
+            router.push("/terms");
+          }
         } else {
           console.error("No token received in login success message");
-        }
-
-        setIsNewLogin(true);
-        loadUser();
-        if (event.data.requiresTerms) {
-          router.push("/terms");
+          toast.error("Authentication error: No token received");
         }
       } else if (event.data.type === "LOGIN_ERROR") {
+        console.error("Login error:", event.data.message);
         setError(event.data.message);
         toast.error(event.data.message || "Failed to login");
       }

@@ -1,14 +1,11 @@
 {
-  "version": 2,
-  "builds": [{ "src": "api/server.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "api/server.js" }],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://ram-resume-client.vercel.app"
+          "value": "https://ram-resume-server.vercel.app"
         },
         {
           "key": "Access-Control-Allow-Methods",
@@ -25,4 +22,4 @@
       ]
     }
   ]
-}
+} 

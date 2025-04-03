@@ -13,9 +13,26 @@ mongoose.set("strictQuery", true);
 // Database connection
 require("../config/db");
 
-// CORS configuration for the client URL
+// Enhanced CORS configuration with multiple allowed origins
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "https://ram-resume-client.vercel.app",
+  "http://localhost:3000",
+];
+
+// CORS configuration
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, etc)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.warn(`Origin ${origin} not allowed by CORS`);
+      callback(null, false);
+    }
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "Authorization"],
@@ -73,6 +90,15 @@ app.use("/api", require("../routes/scan-history"));
 // Test route
 app.get("/", (req, res) => {
   res.send("AI Career Toolbox server is running!");
+});
+
+// Debug route to check environment variables
+app.get("/debug-env", (req, res) => {
+  res.json({
+    clientUrl: process.env.CLIENT_URL,
+    nodeEnv: process.env.NODE_ENV,
+    jwtSecret: process.env.JWT_SECRET ? "Set" : "Not set",
+  });
 });
 
 // Error handling middleware (move this to the end)

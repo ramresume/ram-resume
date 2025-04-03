@@ -13,6 +13,9 @@ router.get(
     // Generate JWT token for the authenticated user
     const token = generateToken(req.user);
 
+    // Get client URL from environment
+    const clientUrl = process.env.CLIENT_URL;
+
     res.send(`
       <html>
         <body>
@@ -21,7 +24,7 @@ router.get(
               type: "LOGIN_SUCCESS",
               requiresTerms: ${!req.user.hasAcceptedTerms},
               token: "${token}"
-            }, "${process.env.CLIENT_URL}");
+            }, "${clientUrl}");
             window.close();
           </script>
         </body>
@@ -31,6 +34,8 @@ router.get(
 );
 
 router.get("/login-failed", (req, res) => {
+  const clientUrl = process.env.CLIENT_URL;
+
   res.send(`
     <html>
       <body>
@@ -40,7 +45,7 @@ router.get("/login-failed", (req, res) => {
               type: "LOGIN_ERROR", 
               message: "Only Fordham University personnel are allowed." 
             }, 
-            "${process.env.CLIENT_URL}"
+            "${clientUrl}"
           );
           window.close();
         </script>
