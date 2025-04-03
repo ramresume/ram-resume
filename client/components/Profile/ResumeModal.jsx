@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { IconUpload, IconFile, IconX, IconDownload } from "@tabler/icons-react";
+import { IconUpload, IconFile, IconX, IconDownload, IconTrash, IconInfoCircle } from "@tabler/icons-react";
 import Button from "@/components/ui/Button";
 import FileUpload from "@/components/ui/FileUpload";
 import { useApi } from "@/hooks/useApi";
@@ -8,6 +8,7 @@ export default function ResumeModal({ active, setActive, onResumeUpdate }) {
   const [showUpload, setShowUpload] = useState(false);
   const [resume, setResume] = useState(null);
   const [pdfUrl, setPdfUrl] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const api = useApi();
 
   const fetchResume = async () => {
@@ -95,6 +96,39 @@ export default function ResumeModal({ active, setActive, onResumeUpdate }) {
     }
   };
 
+  const handleDeleteResume = async () => {
+    if (!resume) return;
+    
+    try {
+      setIsDeleting(true);
+      
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/files/${resume._id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      // Clear state
+      setResume(null);
+      setPdfUrl(null);
+      
+      // Notify parent component if needed
+      if (onResumeUpdate) {
+        onResumeUpdate();
+      }
+    } catch (error) {
+      console.error("Delete failed:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleUploadSuccess = () => {
     setShowUpload(false);
     fetchResume();
@@ -117,6 +151,17 @@ export default function ResumeModal({ active, setActive, onResumeUpdate }) {
 
         {showUpload ? (
           <div className="flex flex-col justify-center items-center h-fit">
+            <div className="bg-fordham-white/10 rounded-[16px] p-4 mb-6 flex items-start gap-3">
+              <IconInfoCircle className="text-fordham-white/80 w-5 h-5 mt-0.5 flex-shrink-0" />
+              <div className="text-fordham-white/80 text-sm">
+                <p className="mb-2">
+                  While resumes are now more widely accessible and are not considered entirely private, we advise against sharing sensitive personal information in your resume.
+                </p>
+                <p>
+                  Please note that we use OpenAI GPT API for processing, and your resume is not being used to train the model or for any other purpose beyond the intended service.
+                </p>
+              </div>
+            </div>
             <FileUpload onSuccess={handleUploadSuccess} />
           </div>
         ) : (
@@ -131,12 +176,23 @@ export default function ResumeModal({ active, setActive, onResumeUpdate }) {
                       {formatFileSize(resume.size)} • Uploaded {formatDate(resume.uploadDate)}
                     </p>
                   </div>
-                  <button
-                    onClick={handleDownload}
-                    className="p-2 hover:bg-fordham-white/10 rounded-lg"
-                  >
-                    <IconDownload className="w-6 h-6 text-fordham-white" />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={handleDownload}
+                      className="p-2 hover:bg-fordham-white/10 rounded-lg"
+                      title="Download resume"
+                    >
+                      <IconDownload className="w-6 h-6 text-fordham-white" />
+                    </button>
+                    <button
+                      onClick={handleDeleteResume}
+                      className="p-2 hover:bg-red-500/20 rounded-lg"
+                      disabled={isDeleting}
+                      title="Delete resume"
+                    >
+                      <IconTrash className="w-6 h-6 text-red-500" />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

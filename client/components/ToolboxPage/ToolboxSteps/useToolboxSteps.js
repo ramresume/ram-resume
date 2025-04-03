@@ -18,6 +18,8 @@ export const useToolboxSteps = ({ state, updateState, navigateStep }) => {
           setCompany={(value) => updateState({ company: value })}
           jobTitle={state.jobTitle}
           setJobTitle={(value) => updateState({ jobTitle: value })}
+          error={state.error}
+          setError={(error) => updateState({ error })}
         />
       ),
       2: (
@@ -34,6 +36,8 @@ export const useToolboxSteps = ({ state, updateState, navigateStep }) => {
           jobDescription={state.jobDescription}
           incrementStep={() => navigateStep("next")}
           setBulletPoints={(points) => updateState({ bulletPoints: points })}
+          error={state.error}
+          setError={(error) => updateState({ error })}
         />
       ),
       4: (
@@ -49,6 +53,8 @@ export const useToolboxSteps = ({ state, updateState, navigateStep }) => {
           setCoverLetter={(value) => updateState({ coverLetter: value })}
           coverLetter={state.coverLetter}
           incrementStep={() => navigateStep("next")}
+          error={state.error}
+          setError={(error) => updateState({ error })}
         />
       ),
     };

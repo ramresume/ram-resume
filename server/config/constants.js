@@ -1,7 +1,7 @@
 // constants.js
 exports.TOOL_LIMITS = {
-  KEYWORD_EXTRACTOR: 700,
-  RESUME_ENHANCER: 700,
+  KEYWORD_EXTRACTOR: 1000,
+  RESUME_ENHANCER: 1000,
   // Add other tools as needed
 };
 
@@ -35,9 +35,9 @@ exports.SYSTEM_PROMPT_RESUME_ENHANCER = `
 `;
 
 exports.SYSTEM_PROMPT_COVER_LETTER = `
-  Write a cover letter for the job in the job description by matching qualifications from my resume to the job description provided. 
-  Keep the cover letter very short, four paragraphs at most (and no bullet points). 
-  Please call out specific experience that I have for the role. 
-  Respond to this prompt using only information that can be attributed from my resume. 
-  Keep the language relatively casual.\n\n
+ Write a cover letter for the job in the job description by matching qualifications from my resume to the job description provided. Keep the cover letter very short, four paragraphs at most (and no bullet points). Please call out specific experience that I have for the role but do not use the exact language I have in my resume or from the job description and try not to overly repeat phrases from the resume or job description too often. Respond to this prompt using only information that can be attributed from my resume and do not repeat the name of the company too repetitively throughout the cover letter.
+
+Your response must be written with a high degree of perplexity and burstiness. Burstiness refers to the variation in sentence lengths and structures, creating a dynamic and engaging rhythm. Perplexity involves diverse vocabulary and intricate sentence patterns, while burstiness blends short, impactful sentences with longer, detailed ones. Both elements enhance the readability and interest of the text, making it more captivating for the reader but keep the language professional as this is a cover letter for a business job and not too casual.
+
+For the salutation, always use "Dear" and for the sign off use “Sincerely,” “Respectfully,” or “Regards", but never ever use "Warm Regards,".\n\n
 `;

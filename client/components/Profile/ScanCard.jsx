@@ -80,7 +80,16 @@ const ScanCard = ({ scan }) => {
         <div className="space-y-6">
           {scan.enhancedBullets.map((item, idx) => (
             <div key={idx} className="space-y-2">
-              <h4 className="text-fordham-white font-medium">{item.company}</h4>
+              <div className="flex items-center justify-between">
+                <h3 className="text-fordham-white text-base font-bold">{item.company}</h3>
+                <button
+                  onClick={() => handleCopyAllBullets(item)}
+                  className="p-1 hover:bg-fordham-black/20 rounded flex items-center gap-1 text-fordham-gray hover:text-fordham-white"
+                >
+                  <IconCopy className="w-4 h-4" />
+                  <span className="text-xs">Copy all</span>
+                </button>
+              </div>
               <ul className="space-y-2">
                 {item.bullets.map((bullet, bulletIdx) => (
                   <li

@@ -88,4 +88,26 @@ router.post("/extract-text", authenticate, upload.single("file"), async (req, re
   }
 });
 
+// Delete file by ID
+router.delete("/files/:id", authenticate, async (req, res) => {
+  try {
+    const fileId = req.params.id;
+
+    // Find the file and ensure it belongs to the current user
+    const file = await File.findOne({ _id: fileId, userId: req.user._id });
+
+    if (!file) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+    // Delete the file
+    await File.findByIdAndDelete(fileId);
+
+    res.json({ message: "File deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting file:", error);
+    res.status(500).json({ error: "Error deleting file" });
+  }
+});
+
 module.exports = router;

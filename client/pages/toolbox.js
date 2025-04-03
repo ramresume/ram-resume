@@ -35,6 +35,7 @@ export default function Toolbox() {
     bulletPoints: [],
     pendingNavigation: null,
     resetInitiated: false,
+    error: null,
   });
 
   const {
@@ -140,25 +141,30 @@ export default function Toolbox() {
           method: "POST",
           body: JSON.stringify({ jobDescription, company, jobTitle }),
         });
-        updateState({ keywords: data.keywords, scanId: data.scanId });
+        updateState({ keywords: data.keywords, scanId: data.scanId, error: null });
       } else if (activeStep === 3) {
         const data = await request("/api/resume", {
           method: "POST",
           body: JSON.stringify({ jobDescription, resume, scanId }),
         });
-        updateState({ bulletPoints: data, scanId: data.scanId });
+        updateState({ bulletPoints: data, scanId: data.scanId, error: null });
       } else if (activeStep === 4) {
         const data = await request("/api/cover-letter", {
           method: "POST",
           body: JSON.stringify({ jobDescription, resume, scanId }),
         });
-        updateState({ coverLetter: data.coverLetter });
+        updateState({ coverLetter: data.coverLetter, error: null });
       }
+      return true; // Return success
     } catch (error) {
       console.error("Request failed:", error);
+      updateState({ error: error.message || "An error occurred" });
       if (error.message.includes("exceeds limit")) {
         toast.error(error.message);
+      } else {
+        toast.error(error.message || "Request failed");
       }
+      return false; // Return failure
     }
   };
 
@@ -178,8 +184,18 @@ export default function Toolbox() {
       return;
     }
 
-    await sendRequest();
-    navigateStep("next");
+    // Validate specific step inputs before proceeding
+    if (activeStep === 1) {
+      // Use the validation function exposed by ToolboxStep1
+      if (window.validateToolboxStep1 && !window.validateToolboxStep1()) {
+        return; // Stop if validation fails
+      }
+    }
+
+    const success = await sendRequest();
+    if (success) {
+      navigateStep("next");
+    }
   };
 
   // Resets specific form data and state based on the current step, updates the highest
@@ -354,6 +370,7 @@ export default function Toolbox() {
               handleSubmit={handleSubmit}
               handleFormReset={handleFormReset}
               loading={loading}
+              error={state.error}
             />
           </div>
         ) : (

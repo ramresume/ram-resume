@@ -1,5 +1,5 @@
 import React from "react";
-import { IconPointFilled } from "@tabler/icons-react";
+import { IconPointFilled, IconAlertCircle } from "@tabler/icons-react";
 import Button from "../ui/Button";
 import { useAuth } from "@/context/AuthContext";
 import Notification from "../ui/Notification";
@@ -11,6 +11,7 @@ function MainToolbox({
   handleSubmit,
   handleFormReset,
   loading,
+  error,
 }) {
   const { usageError, checkUsage } = useAuth();
 
@@ -120,26 +121,36 @@ function MainToolbox({
 
         {buttonConfig && (
           <div className="w-full border-t-[1px] border-[#3B3533]">
-            <div className="w-full flex justify-end items-center p-6 gap-4">
-              {activeStep > 1 && <Button variant="secondary" onClick={decrementStep} text="Back" />}
+            <div className="w-full flex justify-between items-center p-6">
+              <div className="flex items-center">
+                {error && (
+                  <div className="flex items-center gap-2 text-red-500">
+                    <IconAlertCircle size={18} />
+                    <p className="text-sm">{error}</p>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center gap-4">
+                {activeStep > 1 && <Button variant="secondary" onClick={decrementStep} text="Back" />}
 
-              {Array.isArray(buttonConfig) ? (
-                buttonConfig.map((btn, index) => (
+                {Array.isArray(buttonConfig) ? (
+                  buttonConfig.map((btn, index) => (
+                    <Button
+                      key={index}
+                      text={btn.text}
+                      onClick={btn.onClick}
+                      variant={btn.variant}
+                      disabled={btn.disabled}
+                    />
+                  ))
+                ) : (
                   <Button
-                    key={index}
-                    text={btn.text}
-                    onClick={btn.onClick}
-                    variant={btn.variant}
-                    disabled={btn.disabled}
+                    text={buttonConfig.text}
+                    onClick={buttonConfig.onClick}
+                    disabled={buttonConfig.disabled}
                   />
-                ))
-              ) : (
-                <Button
-                  text={buttonConfig.text}
-                  onClick={buttonConfig.onClick}
-                  disabled={buttonConfig.disabled}
-                />
-              )}
+                )}
+              </div>
             </div>
           </div>
         )}

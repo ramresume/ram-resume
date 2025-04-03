@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 import { useApi } from "@/hooks/useApi";
-import { IconFile, IconUpload, IconX } from "@tabler/icons-react";
+import { IconFile, IconUpload, IconX, IconAlertCircle } from "@tabler/icons-react";
 import Button from "@/components/ui/Button";
 import ResumeModal from "@/components/Profile/ResumeModal";
 
-export default function ToolboxStep3({ resume, setResume }) {
+export default function ToolboxStep3({ resume, setResume, error, setError }) {
   const [uploadedResume, setUploadedResume] = useState(null);
   const [resumeModalActive, setResumeModalActive] = useState(false);
   const [resumeInfo, setResumeInfo] = useState(null);
@@ -29,18 +29,21 @@ as they typically don't highlight specific skills. Only resumes in English, plea
     try {
       const response = await api.request("/api/files");
       if (response?.[0]) {
-        const pdfResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/files/download`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-          credentials: "include",
-        });
-        
+        const pdfResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/files/download`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+            credentials: "include",
+          }
+        );
+
         if (!pdfResponse.ok) {
           throw new Error(`HTTP error! status: ${pdfResponse.status}`);
         }
-        
+
         const blob = await pdfResponse.blob();
         // Convert blob to File object with proper name for FormData compatibility
         const file = new File([blob], response[0].filename, { type: "application/pdf" });
@@ -49,47 +52,57 @@ as they typically don't highlight specific skills. Only resumes in English, plea
       }
     } catch (error) {
       console.error("Error fetching resume:", error);
+      setError("Failed to fetch resume. Please try again.");
     }
-  }, []);
+  }, [setError]);
 
   useEffect(() => {
     fetchResume();
   }, [fetchResume]);
 
   function handleResumeUpdate() {
+    setError("");
     fetchResume();
   }
 
   const handleExtractText = async () => {
     if (uploadedResume) {
       try {
+        setError("");
         const formData = new FormData();
         formData.append("file", uploadedResume);
-        
-        const extractResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/extract-text`, {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-          },
-          credentials: "include",
-        });
-        
+
+        const extractResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/extract-text`,
+          {
+            method: "POST",
+            body: formData,
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+            credentials: "include",
+          }
+        );
+
         if (!extractResponse.ok) {
           const errorData = await extractResponse.json().catch(() => ({}));
+          const errorMessage =
+            errorData.error || `Text extraction failed with status ${extractResponse.status}`;
+          setError(errorMessage);
           throw {
             response: {
               status: extractResponse.status,
-              data: errorData
+              data: errorData,
             },
-            message: errorData.error || `Text extraction failed with status ${extractResponse.status}`
+            message: errorMessage,
           };
         }
-        
+
         const data = await extractResponse.json();
         setResume(data.text.trim());
       } catch (error) {
         console.error("Error extracting text:", error);
+        setError(error.message || "Failed to extract text from resume");
       }
     }
   };
@@ -129,9 +142,13 @@ as they typically don't highlight specific skills. Only resumes in English, plea
       )}
       <textarea
         value={resume}
-        onChange={(e) => setResume(e.target.value)}
+        onChange={(e) => {
+          setResume(e.target.value);
+          setError("");
+        }}
         placeholder={placeholder}
-        className="w-full flex-1 bg-fordham-brown text-fordham-white rounded-[8px] placeholder:text-fordham-gray/60 focus:outline-none resize-none"
+        className={`w-full flex-1 p-4 bg-fordham-brown text-fordham-white rounded-[8px] placeholder:text-fordham-gray/60 focus:outline-none resize-none
+          ${error ? "border border-red-500" : ""}`}
       />
     </div>
   );
