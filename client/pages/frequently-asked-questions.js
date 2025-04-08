@@ -24,7 +24,7 @@ export default function FAQ({ FAQPageData, faqPageContent }) {
         <GradientContainer>
           <div className="flex flex-col">
             <div className="w-full flex flex-col items-center gap-2 py-20 md:px-10">
-              <h1 className="h4 md:h3 text-fordham-white">
+              <h1 className="h2 text-fordham-white">
                 {faqPageContent?.title || "Here to help"}
               </h1>
               <p className="body-txt-md text-center font-light text-fordham-light-gray/60">

@@ -94,7 +94,7 @@ export default function Profile() {
       <GradientContainer>
         <PageContainer marginBottom={true} marginTop={false}>
           <div className="w-full flex flex-col items-center gap-2 py-20 md:px-10">
-            <h1 className="h4 md:h3 text-fordham-white">Profile</h1>
+            <h1 className="h2 text-fordham-white">Profile</h1>
             <p className="body-txt-md px-0 md:px-20 text-center font-light text-fordham-light-gray/60">
               Manage your profile and settings here.
             </p>

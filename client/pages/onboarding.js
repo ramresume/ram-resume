@@ -47,10 +47,10 @@ export default function Onboarding() {
         <GradientContainer>
           <div className="w-full flex flex-col items-center gap-2 py-20 px-6 md:px-10">
             <div className="max-w-3xl text-center">
-              <h1 className="h4 md:h2 text-fordham-white mb-4">
+              <h1 className="h2 text-fordham-white mb-4">
                 {step === 1 ? "Complete Your Profile" : "Add Your Resume"}
               </h1>
-              <p className="body-txt-sm md:body-txt-md text-center font-light text-fordham-light-gray/60 max-w-2xl mx-auto">
+              <p className="body-txt-md text-center font-light text-fordham-light-gray/60 max-w-2xl mx-auto">
                 {step === 1
                   ? "Help us personalize your experience and match you with the right opportunities"
                   : "Add your resume to get personalized job recommendations"}

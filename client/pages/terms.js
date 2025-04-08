@@ -72,10 +72,10 @@ export default function Terms() {
         <GradientContainer>
           <div className="w-full flex flex-col items-center gap-6 py-20 md:px-10">
             <div className="max-w-3xl text-center">
-              <h1 className="text-xl md:text-3xl font-bold text-fordham-white mb-4">
+              <h1 className="h2 text-fordham-white mb-4">
                 Notice About RAM Resume AI Usage
               </h1>
-              <p className="body-txt-sm md:body-txt-md text-center font-light text-fordham-light-gray/60 max-w-2xl mx-auto">
+              <p className="body-txt-md text-center font-light text-fordham-light-gray/60 max-w-2xl mx-auto">
                 Please read and understand our terms of service before proceeding
               </p>
             </div>
